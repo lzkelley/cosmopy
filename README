@@ -1,0 +1,16 @@
+CosmoCalc
+=========
+
+Program to rapidly calculate cosmological parameters for a given epoch.
+
+Currently, the user provides a redshift and the program returns the full set of
+cosmological parameters, based on interpolating between a pre-created table of
+values.
+
+
+
+To-Do
+-----
+[1] - Provide any parameter (e.g. luminosity distance) and recieve all
+      cosmological parameters.
+[2] - Behavior if no integration-table file already exists (i.e. for first run)
