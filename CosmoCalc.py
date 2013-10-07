@@ -26,7 +26,7 @@ class Sets(object):
     z_max    = 50.0
 
     build_flag = False
-    table_filename = "cc-table.dat"
+    table_filename = "/Users/lzkelley/Research/cosmocalc/cc-table.dat"
 
     z_target = -1.0
     header   = 4
