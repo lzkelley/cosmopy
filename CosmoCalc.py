@@ -23,7 +23,7 @@ from argparse import ArgumentParser
 
 
 class Sets(object):
-    z_steps  = 1e4
+    z_steps  = 1e3
     z_max    = 50.0
 
     build_flag = False
@@ -385,7 +385,7 @@ def main():
         res = CreateTable(Sets.z_steps, Sets.z_max)
         print "Steps %d, Final:  z = %e, dist = %e +- %e, time = %e +- %e\n" % \
             ( res[0], res[1], res[2]*Pars.HubbleDistance(), \
-              np.abs(res[3]*Pars.HubbleDistance), res[4]*Pars.HubbleTime(), np.abs(res[5]*Pars.HubbleTime()) )
+              np.abs(res[3]*Pars.HubbleDistance()), res[4]*Pars.HubbleTime(), np.abs(res[5]*Pars.HubbleTime()) )
         
 
     if( Sets.z_target >= 0.0 ): 
