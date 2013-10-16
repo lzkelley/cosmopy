@@ -17,16 +17,22 @@ import numpy as np
 #import matplotlib as mpl
 #from matplotlib import pyplot as plt
 
+import os
 import sys
 from argparse import ArgumentParser
 
 
 class Sets(object):
-    z_steps  = 1e5
+    z_steps  = 1e4
     z_max    = 50.0
 
     build_flag = False
-    table_filename = "/Users/lzkelley/Research/cosmocalc/cc-table.dat"
+    table_filename = ".cc-table.dat"
+
+    # script_path = os.path.split(os.path.dirname(os.path.abspath(__file__)))[0]                      # Path to this python script
+    script_path = os.path.dirname( os.path.abspath(__file__) )                      # Path to this python script
+    # table_filename = "/Users/lzkelley/Research/cosmocalc/cc-table.dat"
+    full_table_filename = script_path + "/" + table_filename
 
     z_target = -1.0
     header   = 4
@@ -93,7 +99,7 @@ def HubbleFunction(zz):
 
 
 
-def CreateTable(zsteps, zmax, filename=Sets.table_filename):
+def CreateTable(zsteps, zmax, filename=Sets.full_table_filename):
     """
     Perform a riemann sum to build a table of unscaled comoving distances as a function of redshift.
 
@@ -179,6 +185,9 @@ def CreateTable(zsteps, zmax, filename=Sets.table_filename):
 
 
 
+def CheckTable(filename=Sets.full_table_filename):
+    return os.path.isfile(filename)
+
 
 def ParseSettingsLine(inline):
     """Parse a line of format '... <VAR> = <VALUE>' to retrieve the value."""
@@ -190,7 +199,7 @@ def ParseTableLine(inline):
     return [ float(word) for word in inline.split() ]
 
 
-def RedshiftsFromTable(tarz, filename=Sets.table_filename):
+def RedshiftsFromTable(tarz, filename=Sets.full_table_filename):
     """
     Retrieve the table values nearest in reshift to the one provided.
     """
@@ -344,18 +353,18 @@ def InitArgParse():
     parser.add_argument('-z', type=float, default=-1.0, help='Target redshift z')
 
     args          = parser.parse_args()
-    temp_build    = args.build
+    build_args    = args.build
     Sets.z_target = float(args.z)
 
-    if( temp_build != None ):
+    if( build_args != None ):
         Sets.build_flag          = True
-        Sets.z_steps, Sets.z_max = temp_build
+        Sets.z_steps, Sets.z_max = build_args
 
 
 
 
 def main():
-    
+
     args = InitArgParse()
 
     # Rebuild the integration table
@@ -365,8 +374,24 @@ def main():
             ( res[0], res[1], res[2]*Pars.HubbleDistance(), \
               np.abs(res[3]*Pars.HubbleDistance), res[4]*Pars.HubbleTime(), np.abs(res[5]*Pars.HubbleTime()) )
 
+    # Check that integration table exists
+    if( not CheckTable() ):
+        print "[CosmoCalc.py] Integration table (%s) does not exist." % ( Sets.full_table_filename )
+        # Prompt user for action
+        usr_inp = raw_input('Create default integration table?  y/[n]:')
+        if( usr_inp != 'y' ):  exit(0)
+
+        # Create new table with default parameters
+        res = CreateTable(Sets.z_steps, Sets.z_max)
+        print "Steps %d, Final:  z = %e, dist = %e +- %e, time = %e +- %e\n" % \
+            ( res[0], res[1], res[2]*Pars.HubbleDistance(), \
+              np.abs(res[3]*Pars.HubbleDistance), res[4]*Pars.HubbleTime(), np.abs(res[5]*Pars.HubbleTime()) )
+        
+
     if( Sets.z_target >= 0.0 ): 
         scales = CalculateScales(Sets.z_target, pout=True)
+
+
 
 
 if __name__ == "__main__": main()

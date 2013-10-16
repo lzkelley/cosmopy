@@ -8,9 +8,17 @@ cosmological parameters, based on interpolating between a pre-created table of
 values.
 
 
+Changes
+-------
+2013-10-16 - Program checks for integration table, if it doesn't exist - prompt's user whether or
+             or not to create one with the default settings.  If yes, builds; otherwise exits.
+             Table filename has also been made a hidden file, and is placed in the script's dir.
+
 
 To-Do
 -----
 [1] - Provide any parameter (e.g. luminosity distance) and recieve all
       cosmological parameters.
-[2] - Behavior if no integration-table file already exists (i.e. for first run)
+[3] - CMB Temperature
+
+2013-10-16 - [2] - Behavior if no integration-table file already exists (i.e. for first run)
