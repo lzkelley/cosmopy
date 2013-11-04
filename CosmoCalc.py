@@ -8,20 +8,17 @@
 # LKelley@cfa.harvard.edu
 # ==================================================================================================
 
-
-#from astropy.io import ascii as at
-#from astropy.utils.console import ProgressBar
-#from linecache import getline as lc_getline
+import os
+import sys
 
 import numpy as np
-#from scipy.interpolate import interp1d
 import scipy as sp
 import scipy.optimize
 import scipy.integrate
 
-import os
-import sys
 from argparse import ArgumentParser
+
+
 
 
 class Sets(object):
