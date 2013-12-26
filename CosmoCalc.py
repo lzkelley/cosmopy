@@ -142,6 +142,18 @@ def IntegrateTime(z0, z1):
     return time, terr
 
 
+def DistToCM(tst, indist):
+    """
+    Based on unit settings, convert distance to centimeters.
+
+    Setup to accept parsecs (pc), megaparsecs (mpc), or lightyears (ly).  Stored
+    in Settings object (tst).
+    """
+    if(   tst.use_pc  ): indist *= Pars.parsec
+    elif( tst.use_mpc ): indist *= Pars.parsec*(1.0e6)
+    elif( tst.use_ly  ): indist *= Pars.year*Pars.c
+    return indist
+
 
 def InvertComDist(cdist):
     rhs = lambda x: IntegrateDistance(0.0, x)[0] - cdist
@@ -232,28 +244,20 @@ def RedshiftFromTarget(t_sets):
     # Redshift
     if( t_sets.z_target >= 0.0 ): 
         if( t_sets.verbose ): print " - Redshift"
-        return t_sets.z_target #, RedshiftFromLine
+        return t_sets.z_target
 
 
     # Comoving Distance
     if( t_sets.cd_target >= 0.0 ):
-        if( t_sets.verbose ): print " - Comoving Distance"
-        t_cd = t_sets.cd_target
-        if(   t_sets.use_pc  ): t_cd *= Pars.parsec
-        elif( t_sets.use_mpc ): t_cd *= Pars.parsec*(1.0e6)
-        elif( t_sets.use_ly  ): t_cd *= Pars.year*Pars.c
-
+        t_cd = DistToCM(t_sets, t_sets.cd_target)
+        if( t_sets.verbose ): print " - Comoving Distance, %.2e [cm]" % (t_cd)
         return InvertComDist( t_cd/Pars.HubbleDistance() )
 
 
     # Luminosity Distance
     if( t_sets.ld_target >= 0.0 ):
-        if( t_sets.verbose ): print " - Luminosity Distance"
-        t_ld = t_sets.ld_target
-        if(   t_sets.use_pc  ): t_ld *= Pars.parsec
-        elif( t_sets.use_mpc ): t_ld *= Pars.parsec*(1.0e6)
-        elif( t_sets.use_ly  ): t_ld *= Pars.year*Pars.c
-
+        t_ld = DistToCM(t_sets, t_sets.ld_target)
+        if( t_sets.verbose ): print " - Luminosity Distance, %.2e [cm]" % (t_ld)
         return InvertLumDist( t_ld/Pars.HubbleDistance() )
 
 
@@ -269,9 +273,9 @@ def InitArgParse():
 
     parser          = ArgumentParser()
 
-    parser.add_argument('-z',      type=float, default=Sets.z_target,       help='Target redshift z'                                        )
-    parser.add_argument('-cd',     type=float, default=Sets.cd_target,      help='Target coming distance D_C'                               )
-    parser.add_argument('-ld',     type=float, default=Sets.ld_target,      help='Target luminosity distance D_C'                           )
+    parser.add_argument('-z',         type=float, default=Sets.z_target,       help='Target redshift z'                                        )
+    parser.add_argument('-cd','-dc',  type=float, default=Sets.cd_target,      help='Target coming distance D_C'                               )
+    parser.add_argument('-ld','-dl',  type=float, default=Sets.ld_target,      help='Target luminosity distance D_C'                           )
 
     parser.add_argument('--print', dest='prt',  action='store_true', default=False, help="Print defaul cosmological parameters"                  )
     parser.add_argument('--plot',               action='store_true', default=False, help="Plot cosmological parameters"                          )
@@ -293,6 +297,8 @@ def InitArgParse():
 
 
 def main():
+
+    print "\nCosmoCalc"
 
     args         = InitArgParse()
 
