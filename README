@@ -1,24 +1,29 @@
 CosmoCalc
 =========
 
-Program to rapidly calculate cosmological parameters for a given epoch.
+Program to rapidly calculate cosmological parameters over history.
 
-Currently, the user provides a redshift and the program returns the full set of
-cosmological parameters, based on interpolating between a pre-created table of
-values.
+The user provides an input parameter (e.g. redshift) and recieves the entire set
+of cosmological parameters corresponding to the epoch thus specified.
 
+Possible Input:
+- Redshift              '-z '
+- Luminosity distance   '-dl'
+- Comoving   distance   '-dc'
+- Look-back    time     '-tl'
+- Universe age time     '-ta'
+
+To print the currently used cosmological parameters, use '--print'
 
 Changes
 -------
-2013-10-16 - Program checks for integration table, if it doesn't exist - prompt's user whether or
-             or not to create one with the default settings.  If yes, builds; otherwise exits.
-             Table filename has also been made a hidden file, and is placed in the script's dir.
 
 
 To-Do
 -----
-[1] - Provide any parameter (e.g. luminosity distance) and recieve all
-      cosmological parameters.
-[3] - CMB Temperature
-
-2013-10-16 - [2] - Behavior if no integration-table file already exists (i.e. for first run)
+- CMB Temperature
+- Allow modifications to cosmological parameters
+- Produce plots of distances over redshift (and time)
+- Allow negative target values (i.e. look to future)
+- Add initial guess for redshift (etc)
+- Determine values between pairs of redshifts (instead of always relative to zero)
