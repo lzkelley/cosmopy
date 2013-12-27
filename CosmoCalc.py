@@ -55,15 +55,17 @@ class Parameters(object):
     Standard Cosmological Parameters.
 
     Cosmological Parameters taken from
-    '1212.5226v3 - Nine-Year WMAP Observations: Cosmological Parameter Results'
+    [1] '1212.5226v3 - Nine-Year WMAP Observations: Cosmological Parameter Results'
+    [2] '1002.3488   - The Cosmological Parameters 2010'
     """
 
     H0         = 69.7                      # Hubble's Constant           [km/s/Mpc]
     T0         = 13.76                     # Age of the Universe         [Gyr]
     
-    OmegaDM    = 0.235                     # Dark Matter Density         [1/critical-density]
-    OmegaB     = 0.0464                    # Baryonic Density            [1/critical-density]
-    OmegaL     = 0.7185                    # Dark Energy Density         [1/critical-density]
+    OmegaDM    = 0.235                     # Dark Matter Density         [1]
+    OmegaB     = 0.0464                    # Baryonic Density            [1]
+    OmegaL     = 0.7185                    # Dark Energy Density         [1]
+    OmegaR     = 4.984e-4                  # Radiation Density           [2] omegar*h^2 = 2.47e-5; h = 0.704
 
     c          = 2.99792458e10             # Speed of Light              [cm/s]
     G          = 6.67259e-8                # Gravitational Constant      [cm^3/g/s^2]
@@ -86,11 +88,12 @@ class Parameters(object):
     @staticmethod
     def ParameterString():
         parstr  = "\n"
-        parstr += "Hubble Constant,           H0  = %e\n" % (pars.H0)
-        parstr += "Age of the Universe,       T0  = %e\n" % (pars.T0)
-        parstr += "Baryon Fraction,       OmegaB  = %e\n" % (pars.OmegaB )
-        parstr += "Dark Matter Fraction,  OmegaDM = %e\n" % (pars.OmegaDM)
-        parstr += "Dark Energy Fraction,  OmegaL  = %e\n" % (pars.OmegaL )
+        parstr += "Hubble Constant,           H0  = %f\n" % (pars.H0)
+        parstr += "Age of the Universe,       T0  = %f\n" % (pars.T0)
+        parstr += "Baryon      Fraction,  OmegaB  = %f\n" % (pars.OmegaB )
+        parstr += "Dark Matter Fraction,  OmegaDM = %f\n" % (pars.OmegaDM)
+        parstr += "Dark Energy Fraction,  OmegaL  = %f\n" % (pars.OmegaL )
+        parstr += "Radiation   Fraction,  OmegaR  = %f\n" % (pars.OmegaR )
 
         return parstr
 
@@ -99,9 +102,10 @@ class Parameters(object):
         """
         The E(z) function from Hogg1999.
 
-        This version of the equation assumes that OmegaK (curvature) is zero.
+        Incorporates matter (dark and light), radiation, and dark energy.  This
+        version of the equation assumes that OmegaK (curvature) is zero.
         """
-        return np.sqrt( pars.OmegaMatter()*np.power((1+zz),3) + pars.OmegaL )
+        return np.sqrt( pars.OmegaMatter()*np.power((1.0+zz),3) + pars.OmegaR*np.power((1.0+zz),4) + pars.OmegaL )
 
     @staticmethod
     def HubbleDistanceFunction(zz):
@@ -263,14 +267,14 @@ def InitArgParse():
     parser.add_argument('-ld','-dl',  type=float, default=sets.ld_target,      help='Target luminosity distance D_C'                           )
 
     parser.add_argument('--print', dest='prt',  action='store_true', default=False, help="Print defaul cosmological parameters"                  )
-    parser.add_argument('--plot',               action='store_true', default=False, help="Plot cosmological parameters"                          )
+    #parser.add_argument('--plot',               action='store_true', default=False, help="Plot cosmological parameters"                          )
     parser.add_argument('--mpc',                action='store_true', default=False, help="Use provided distance ('-cd' or '-ld') in megaparsecs" )
     parser.add_argument('--ly',                 action='store_true', default=False, help="Use provided distance ('-cd' or '-ld') in lightyears"  )
     parser.add_argument('--pc',                 action='store_true', default=False, help="Use provided distance ('-cd' or '-ld') in parsecs"     )
 
     args            = parser.parse_args()
     sets.print_flag = args.prt
-    sets.plot_flag  = args.plot
+    #sets.plot_flag  = args.plot
     sets.z_target   = float(args.z)
     sets.cd_target  = float(args.cd)
     sets.ld_target  = float(args.ld)
@@ -293,7 +297,7 @@ def main():
     # Print Cosmological parameters
     if( sets.print_flag ):
         print pars.ParameterString()
-
+        exit(1)
 
     redshift     = RedshiftFromTarget(sets)
     cosmo_params = CosmologicalParameters(redshift, pout=True)
