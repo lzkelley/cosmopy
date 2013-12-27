@@ -19,9 +19,12 @@ import scipy.integrate
 from argparse import ArgumentParser
 
 
+# Global Variables (initialized in 'main')
+sets = None
+pars = None
 
 
-class Sets(object):
+class Settings(object):
     """
     Object to store the current configuration of CosmoCalc.
     """
@@ -37,17 +40,17 @@ class Sets(object):
     cd_target  = -1.0
     ld_target  = -1.0
 
-    root_tol   = 1.0e-10
-    quad_iter  = 1000
+    root_tol   = 1.0e-10                                                                            # Root finding tolerance
+    quad_iter  = 1000                                                                               # Number of iterations for quadrature
 
-    table_filename      = ".cc-table.dat"                                                           # Name of integration table file
-    script_path         = os.path.dirname( os.path.abspath(__file__) )                              # Path to this python script
-    full_table_filename = script_path + "/" + table_filename
-
-
+    #table_filename      = ".cc-table.dat"                                                           # Name of integration table file
+    #script_path         = os.path.dirname( os.path.abspath(__file__) )                              # Path to this python script
+    #full_table_filename = script_path + "/" + table_filename
 
 
-class Pars(object):
+
+
+class Parameters(object):
     """
     Standard Cosmological Parameters.
 
@@ -72,22 +75,22 @@ class Pars(object):
     year       = 3.15569520e+07            # Year                        [s]
 
     @staticmethod
-    def HubbleTime():      return 1.0*(1.0e6*Pars.parsec/1.0e5)/Pars.H0
+    def HubbleTime():      return 1.0*(1.0e6*pars.parsec/1.0e5)/pars.H0
     @staticmethod
-    def HubbleDistance():  return Pars.c*Pars.HubbleTime()
+    def HubbleDistance():  return pars.c*pars.HubbleTime()
     @staticmethod
-    def CriticalDensity(): return 3*np.square(Pars.H0)/(8.*np.pi*Pars.G)
+    def CriticalDensity(): return 3*np.square(pars.H0)/(8.*np.pi*pars.G)
     @staticmethod
-    def OmegaMatter():     return Pars.OmegaB+Pars.OmegaDM
+    def OmegaMatter():     return pars.OmegaB+pars.OmegaDM
 
     @staticmethod
     def ParameterString():
         parstr  = "\n"
-        parstr += "Hubble Constant,           H0  = %e\n" % (Pars.H0)
-        parstr += "Age of the Universe,       T0  = %e\n" % (Pars.T0)
-        parstr += "Baryon Fraction,       OmegaB  = %e\n" % (Pars.OmegaB )
-        parstr += "Dark Matter Fraction,  OmegaDM = %e\n" % (Pars.OmegaDM)
-        parstr += "Dark Energy Fraction,  OmegaL  = %e\n" % (Pars.OmegaL )
+        parstr += "Hubble Constant,           H0  = %e\n" % (pars.H0)
+        parstr += "Age of the Universe,       T0  = %e\n" % (pars.T0)
+        parstr += "Baryon Fraction,       OmegaB  = %e\n" % (pars.OmegaB )
+        parstr += "Dark Matter Fraction,  OmegaDM = %e\n" % (pars.OmegaDM)
+        parstr += "Dark Energy Fraction,  OmegaL  = %e\n" % (pars.OmegaL )
 
         return parstr
 
@@ -98,47 +101,29 @@ class Pars(object):
 
         This version of the equation assumes that OmegaK (curvature) is zero.
         """
-        return np.sqrt( Pars.OmegaMatter()*np.power((1+zz),3) + Pars.OmegaL )
+        return np.sqrt( pars.OmegaMatter()*np.power((1+zz),3) + pars.OmegaL )
 
     @staticmethod
     def HubbleDistanceFunction(zz):
-        return 1.0/Pars.HubbleFunction(zz)
+        return 1.0/pars.HubbleFunction(zz)
 
     @staticmethod
     def HubbleTimeFunction(zz):
-        return 1.0/( (1.0+zz)*Pars.HubbleFunction(zz) )
+        return 1.0/( (1.0+zz)*pars.HubbleFunction(zz) )
 
-
-
-
-def ERROR(func=None, errstr=None, errnum=None, ex=False):
-    """Print error message."""
-    where_str = "CosmoCalc.py"
-    error_str = "ERROR"
-    if( func   != None ): where_str += " - %s" % (func  )
-    if( errnum != None ): error_str += " %d -" % (errnum)
-    if( errstr != None ): error_str += " %s"   % (errstr)
-
-    print '\n[%s] %s !!\n\n' % (where_str, error_str)
-
-    if( ex ):
-        sys.exit(errnum)
-        exit(errnum)
-
-    return
 
 
 
 def Integrate(func, z0, z1):
-    val, err = sp.integrate.quadrature(func, z0, z1, maxiter=Sets.quad_iter)
+    val, err = sp.integrate.quadrature(func, z0, z1, maxiter=sets.quad_iter)
     return val, err
 
 def IntegrateDistance(z0, z1):
-    dist, derr = Integrate(Pars.HubbleDistanceFunction, z0, z1)
+    dist, derr = Integrate(pars.HubbleDistanceFunction, z0, z1)
     return dist, derr
 
 def IntegrateTime(z0, z1):
-    time, terr = Integrate(Pars.HubbleTimeFunction, z0, z1)
+    time, terr = Integrate(pars.HubbleTimeFunction, z0, z1)
     return time, terr
 
 
@@ -149,19 +134,19 @@ def DistToCM(tst, indist):
     Setup to accept parsecs (pc), megaparsecs (mpc), or lightyears (ly).  Stored
     in Settings object (tst).
     """
-    if(   tst.use_pc  ): indist *= Pars.parsec
-    elif( tst.use_mpc ): indist *= Pars.parsec*(1.0e6)
-    elif( tst.use_ly  ): indist *= Pars.year*Pars.c
+    if(   tst.use_pc  ): indist *= pars.parsec
+    elif( tst.use_mpc ): indist *= pars.parsec*(1.0e6)
+    elif( tst.use_ly  ): indist *= pars.year*pars.c
     return indist
 
 
 def InvertComDist(cdist):
     rhs = lambda x: IntegrateDistance(0.0, x)[0] - cdist
-    return sp.optimize.newton( rhs, 1.0, tol=Sets.root_tol )
+    return sp.optimize.newton( rhs, 1.0, tol=sets.root_tol )
 
 def InvertLumDist(ldist):
     rhs = lambda x: (1.0+x)*IntegrateDistance(0.0, x)[0] - ldist
-    return sp.optimize.newton( rhs, 1.0, tol=Sets.root_tol )
+    return sp.optimize.newton( rhs, 1.0, tol=sets.root_tol )
 
 
     
@@ -177,38 +162,38 @@ def CosmologicalParameters(redz, pout=False):
     retstr = "z = %e\n" % (redz)
 
     # Comoving Distance
-    comDist       = Pars.HubbleDistance()*dist
-    comDist_err   = Pars.HubbleDistance()*dist_err
-    retstr       += "D_C  =  %+e +- %e  [cm]  ~  %+e [Mpc] : Comoving Distance\n" % (comDist, comDist_err, comDist/(1.0e6*Pars.parsec) )
+    comDist       = pars.HubbleDistance()*dist
+    comDist_err   = pars.HubbleDistance()*dist_err
+    retstr       += "D_C  =  %+e +- %e  [cm]  ~  %+e [Mpc] : Comoving Distance\n" % (comDist, comDist_err, comDist/(1.0e6*pars.parsec) )
 
     # Luminosity Distance
     lumDist       = (1.0 + redz)*comDist
     lumDist_err   = (1.0 + redz)*comDist_err
-    retstr       += "D_L  =  %+e +- %e  [cm]  ~  %+e [Mpc] : Luminosity Distance\n" % (lumDist, lumDist_err, lumDist/(1.0e6*Pars.parsec) )
+    retstr       += "D_L  =  %+e +- %e  [cm]  ~  %+e [Mpc] : Luminosity Distance\n" % (lumDist, lumDist_err, lumDist/(1.0e6*pars.parsec) )
 
     # Angular Diameter Distance
     angDist       = comDist/(1.0 + redz)
     angDist_err   = comDist_err/(1.0 + redz)
-    retstr       += "D_A  =  %+e +- %e  [cm]  ~  %+e [Mpc] : Angular Diameter Distance\n" % (angDist, angDist_err, lumDist/(1.0e6*Pars.parsec)) 
+    retstr       += "D_A  =  %+e +- %e  [cm]  ~  %+e [Mpc] : Angular Diameter Distance\n" % (angDist, angDist_err, lumDist/(1.0e6*pars.parsec)) 
 
     # Arcsecond size
-    arcSize       = Pars.arcsec*angDist
-    arcSize_err   = Pars.arcsec*angDist_err
-    retstr       += "Arc  =  %+e +- %e  [cm]  ~  %+e [pc]  : Arcsecond Transverse Distance\n" % (arcSize, arcSize_err, arcSize/(Pars.parsec) )
+    arcSize       = pars.arcsec*angDist
+    arcSize_err   = pars.arcsec*angDist_err
+    retstr       += "Arc  =  %+e +- %e  [cm]  ~  %+e [pc]  : Arcsecond Transverse Distance\n" % (arcSize, arcSize_err, arcSize/(pars.parsec) )
 
     # Lookback Time
-    lookTime      = Pars.HubbleTime()*time
-    lookTime_err  = Pars.HubbleTime()*time_err
-    retstr       += "T_L  =  %+e +- %e  [s]   ~  %+e [Myr] : Lookback Time\n" % (lookTime, lookTime_err, lookTime/(1.0e6*Pars.year) )
+    lookTime      = pars.HubbleTime()*time
+    lookTime_err  = pars.HubbleTime()*time_err
+    retstr       += "T_L  =  %+e +- %e  [s]   ~  %+e [Myr] : Lookback Time\n" % (lookTime, lookTime_err, lookTime/(1.0e6*pars.year) )
 
     # Age
-    ageTime       = Pars.HubbleTime()*(1.0-time)
+    ageTime       = pars.HubbleTime()*(1.0-time)
     ageTime_err   = lookTime_err
-    retstr       += "t    =  %+e +- %e  [s]   ~  %+e [Myr] : Age of the Universe\n" % (ageTime, ageTime_err, ageTime/(1.0e6*Pars.year) )
+    retstr       += "t    =  %+e +- %e  [s]   ~  %+e [Myr] : Age of the Universe\n" % (ageTime, ageTime_err, ageTime/(1.0e6*pars.year) )
 
     # Distance Modulus
-    distMod       = 5.0*np.log10(lumDist/(Pars.parsec*10.0))
-    distMod_err   = 5.0*np.log10(lumDist_err/(Pars.parsec*10.0))
+    distMod       = 5.0*np.log10(lumDist/(pars.parsec*10.0))
+    distMod_err   = 5.0*np.log10(lumDist_err/(pars.parsec*10.0))
     retstr       += "DM   =  %+e +- %e  []    Distance Modulus\n" % (distMod, np.abs(distMod_err) )
 
     if( pout ): print retstr
@@ -238,7 +223,7 @@ def RedshiftFromTarget(t_sets):
 
     # Make sure only one target is specified (>= 0.0)
     if( sum(tarz >= 0.0 for tarz in all_targets) != 1 ): 
-        ERROR(func='DetermineTarget', errstr='Must specify a single target parameter.', ex=True)
+        raise RuntimeError('Must specify a single target parameter.')
 
 
     # Redshift
@@ -251,17 +236,17 @@ def RedshiftFromTarget(t_sets):
     if( t_sets.cd_target >= 0.0 ):
         t_cd = DistToCM(t_sets, t_sets.cd_target)
         if( t_sets.verbose ): print " - Comoving Distance, %.2e [cm]" % (t_cd)
-        return InvertComDist( t_cd/Pars.HubbleDistance() )
+        return InvertComDist( t_cd/pars.HubbleDistance() )
 
 
     # Luminosity Distance
     if( t_sets.ld_target >= 0.0 ):
         t_ld = DistToCM(t_sets, t_sets.ld_target)
         if( t_sets.verbose ): print " - Luminosity Distance, %.2e [cm]" % (t_ld)
-        return InvertLumDist( t_ld/Pars.HubbleDistance() )
+        return InvertLumDist( t_ld/pars.HubbleDistance() )
 
 
-    ERROR(func='DetermineTarget', errstr='Must specify a single target parameter.', ex=True)
+    raise RuntimeError('Must specify a single target parameter.')
 
     
 
@@ -273,9 +258,9 @@ def InitArgParse():
 
     parser          = ArgumentParser()
 
-    parser.add_argument('-z',         type=float, default=Sets.z_target,       help='Target redshift z'                                        )
-    parser.add_argument('-cd','-dc',  type=float, default=Sets.cd_target,      help='Target coming distance D_C'                               )
-    parser.add_argument('-ld','-dl',  type=float, default=Sets.ld_target,      help='Target luminosity distance D_C'                           )
+    parser.add_argument('-z',         type=float, default=sets.z_target,       help='Target redshift z'                                        )
+    parser.add_argument('-cd','-dc',  type=float, default=sets.cd_target,      help='Target coming distance D_C'                               )
+    parser.add_argument('-ld','-dl',  type=float, default=sets.ld_target,      help='Target luminosity distance D_C'                           )
 
     parser.add_argument('--print', dest='prt',  action='store_true', default=False, help="Print defaul cosmological parameters"                  )
     parser.add_argument('--plot',               action='store_true', default=False, help="Plot cosmological parameters"                          )
@@ -284,14 +269,14 @@ def InitArgParse():
     parser.add_argument('--pc',                 action='store_true', default=False, help="Use provided distance ('-cd' or '-ld') in parsecs"     )
 
     args            = parser.parse_args()
-    Sets.print_flag = args.prt
-    Sets.plot_flag  = args.plot
-    Sets.z_target   = float(args.z)
-    Sets.cd_target  = float(args.cd)
-    Sets.ld_target  = float(args.ld)
-    Sets.use_pc     = args.pc
-    Sets.use_mpc    = args.mpc
-    Sets.use_ly     = args.ly
+    sets.print_flag = args.prt
+    sets.plot_flag  = args.plot
+    sets.z_target   = float(args.z)
+    sets.cd_target  = float(args.cd)
+    sets.ld_target  = float(args.ld)
+    sets.use_pc     = args.pc
+    sets.use_mpc    = args.mpc
+    sets.use_ly     = args.ly
  
 
 
@@ -300,14 +285,17 @@ def main():
 
     print "\nCosmoCalc"
 
+    global sets, pars
+    sets         = Settings()
+    pars         = Parameters()
     args         = InitArgParse()
 
     # Print Cosmological parameters
-    if( Sets.print_flag ):
-        print Pars.ParameterString()
+    if( sets.print_flag ):
+        print pars.ParameterString()
 
 
-    redshift     = RedshiftFromTarget(Sets)
+    redshift     = RedshiftFromTarget(sets)
     cosmo_params = CosmologicalParameters(redshift, pout=True)
 
 
