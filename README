@@ -28,7 +28,8 @@ Changes
   + v1.2 : 2013-12-27
            Determines epoch based on any standard cosmological parameter, and returns
            the other parameters.
-
+  + v1.3 : 2014-01-19
+           Cosmological parameters can be changed via command-line arguments.
 
 
 
@@ -36,8 +37,8 @@ Changes
 To-Do
 -----
 - CMB Temperature
-- Allow modifications to cosmological parameters
 - Produce plots of distances over redshift (and time)
 - Allow negative target values (i.e. look to future)
 - Add initial guess for redshift (etc)
 - Determine values between pairs of redshifts (instead of always relative to zero)
+- Allow lists of target values (instead of single)
