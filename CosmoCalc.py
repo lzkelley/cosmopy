@@ -343,8 +343,12 @@ def ParseArgs():
     parser.add_argument('--print', dest='prt',  action='store_true', default=sets.print_flag, help="Print defaul cosmological parameters"                  )
 
     # Modify Cosmological Parameters
-    parser.add_argument('--h0',  type=float, default=pars.H0,      help='Hubble Constant (H0) [km/s/Mpc]'                                )
-    parser.add_argument('--t0',  type=float, default=pars.T0,      help='Hubble Time (T0) [1/s]'                                         )
+    parser.add_argument('--H0','--h0',          type=float, metavar='',        default=pars.H0,           help='Hubble Constant (H0) [km/s/Mpc]'                         )
+    parser.add_argument('--T0','--t0',          type=float, metavar='',        default=pars.T0,           help='Hubble Time (T0) [1/s]'                                  )
+    parser.add_argument('--ODM','--darkmatter', type=float, metavar='OmegaDM', default=pars.OmegaDM,      help='Dark Matter fraction (OmegaDM) [1/critical-density]'     )
+    parser.add_argument('--OB', '--baryon',     type=float, metavar='OmegaB',  default=pars.OmegaB,       help='Baryon      fraction (OmegaB)  [1/critical-density]'     )
+    parser.add_argument('--OL','--darkenergy',  type=float, metavar='OmegaL',  default=pars.OmegaL,       help='Dark Energy fraction (OmegaL)  [1/critical-density]'     )
+    parser.add_argument('--OR','--radiation',   type=float, metavar='OmegaR',  default=pars.OmegaR,       help='Radtion     fraction (OmegaR)  [1/critical-density]'     )
 
 
     args            = parser.parse_args()
@@ -362,7 +366,15 @@ def ParseArgs():
     sets.use_yr     = args.yr
     sets.use_myr    = args.myr
 
-    return sets
+    pars.H0         = args.H0
+    pars.T0         = args.T0
+    pars.OmegaDM    = args.ODM
+    pars.OmegaB     = args.OB
+    pars.OmegaL     = args.OL
+    pars.OmegaR     = args.OR
+
+
+    return sets, pars
 
 
 def main():
@@ -372,7 +384,7 @@ def main():
     global sets, pars
     sets         = Settings()                                                                       # Create a Settings object
     pars         = Parameters()                                                                     # Create a Cosmological Parameters Object
-    sets         = ParseArgs()                                                                      # Modify settings based on user arguments
+    sets, pars   = ParseArgs()                                                                      # Modify settings and parameters based on user arguments
     
     # Check if targets have been properly set
     retval = CheckTargets()
