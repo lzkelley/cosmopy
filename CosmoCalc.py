@@ -24,6 +24,7 @@ sets = None
 pars = None
 
 
+
 class Settings(object):
     """
     Object to store the current configuration of CosmoCalc.
@@ -63,14 +64,15 @@ class Parameters(object):
     [2] '1002.3488   - The Cosmological Parameters 2010'
     """
 
+    # Default Cosmological Parameters
     H0         = 69.7                      # Hubble's Constant           [km/s/Mpc]
     T0         = 13.76                     # Age of the Universe         [Gyr]
-    
     OmegaDM    = 0.235                     # Dark Matter Density         [1]
     OmegaB     = 0.0464                    # Baryonic Density            [1]
     OmegaL     = 0.7185                    # Dark Energy Density         [1]
     OmegaR     = 4.984e-4                  # Radiation Density           [2] omegar*h^2 = 2.47e-5; h = 0.704
 
+    # Physical Constants
     c          = 2.99792458e10             # Speed of Light              [cm/s]
     G          = 6.67259e-8                # Gravitational Constant      [cm^3/g/s^2]
     mProton    = 1.6726231e-24             # Proton Mass                 [g]
@@ -82,13 +84,9 @@ class Parameters(object):
 
 
     def HubbleTime(self):      return 1.0*(1.0e6*self.parsec/1.0e5)/self.H0
-
     def HubbleDistance(self):  return self.c*self.HubbleTime()
-
     def CriticalDensity(self): return 3*np.square(self.H0)/(8.*np.pi*self.G)
-
     def OmegaMatter(self):     return self.OmegaB+self.OmegaDM
-
 
     def ParameterString(self):
         parstr  = "\n"
@@ -118,40 +116,36 @@ class Parameters(object):
         return np.sqrt( t_matter + t_radiation + t_darkenergy )
 
 
-    def HubbleDistanceFunction(self, zz):
-        return 1.0/self.HubbleFunction(zz)
-
-
-    def HubbleTimeFunction(self, zz):
-        return 1.0/( (1.0+zz)*self.HubbleFunction(zz) )
+    def HubbleDistanceFunction(self, zz): return 1.0/self.HubbleFunction(zz)
+    def HubbleTimeFunction(self, zz): return 1.0/( (1.0+zz)*self.HubbleFunction(zz) )
 
 
 
 
 
 
-def DistToCM(tst, indist):
+def DistToCM(indist):
     """
     Based on unit settings, convert distance to centimeters.
 
     Setup to accept [default] centimeters (cm), parsecs (pc), megaparsecs (mpc),
     or lightyears (ly).  Stored in Settings object (tst).
     """
-    if(   tst.use_pc  ): indist *= pars.parsec
-    elif( tst.use_mpc ): indist *= pars.parsec*(1.0e6)
-    elif( tst.use_ly  ): indist *= pars.year*pars.c
+    if(   sets.use_pc  ): indist *= pars.parsec
+    elif( sets.use_mpc ): indist *= pars.parsec*(1.0e6)
+    elif( sets.use_ly  ): indist *= pars.year*pars.c
     return indist
 
 
-def TimeToS(tst, intime):
+def TimeToS(intime):
     """
     Based on unit settings, convert time to seconds.
 
     Setup to accept [default] seconds (s), years (yr), megayears (myr).  Stored
     in Settings object (tst).
     """
-    if(   tst.use_yr  ): intime *= pars.year
-    elif( tst.use_myr ): intime *= pars.year*(1.0e6)
+    if(   sets.use_yr  ): intime *= pars.year
+    elif( sets.use_myr ): intime *= pars.year*(1.0e6)
     return intime
 
 
@@ -264,8 +258,24 @@ def CosmologicalParameters(redz, pout=False):
 
 
 
+def CheckTargets():
+    """Make sure that one and only one target parameter has been set."""
 
-def RedshiftFromTarget(t_sets):
+    # Create list of all possible targets
+    all_targets = [ sets.z_target , sets.cd_target, sets.ld_target,
+                    sets.tl_target, sets.ta_target                   ]
+
+    # Unspecified targets are negative; make sure only one is positive
+    num_targs = sum(tarz >= 0.0 for tarz in all_targets)
+    if( num_targs > 1 ):
+        raise RuntimeError('Too many targets specified (%d > 1)!' % num_targs)
+
+    if( num_targs == 1 ): return True
+
+    return False
+    
+
+def RedshiftFromTarget():
     """
     Given a settings object, determine which parameter is being targeted.
 
@@ -275,49 +285,35 @@ def RedshiftFromTarget(t_sets):
     parameter from a line from the table (e.g. 'RedshiftFromLine').
     """
 
-    all_targets = [ t_sets.z_target , t_sets.cd_target, t_sets.ld_target,
-                    t_sets.tl_target, t_sets.ta_target                   ]
-
-    # Make sure only one target is specified (>= 0.0)
-    if( sum(tarz >= 0.0 for tarz in all_targets) != 1 ): 
-        raise RuntimeError('Must specify a single target parameter.')
-
-
     # Redshift
-    if( t_sets.z_target >= 0.0 ): 
-        if( t_sets.verbose ): print " - Redshift"
-        return t_sets.z_target
-
+    if( sets.z_target >= 0.0 ): 
+        if( sets.verbose ): print " - Redshift"
+        return sets.z_target
 
     # Comoving Distance
-    if( t_sets.cd_target >= 0.0 ):
-        t_cd = DistToCM(t_sets, t_sets.cd_target)
-        if( t_sets.verbose ): print " - Comoving Distance, %.2e [cm]" % (t_cd)
+    if( sets.cd_target >= 0.0 ):
+        t_cd = DistToCM(sets.cd_target)
+        if( sets.verbose ): print " - Comoving Distance, %.2e [cm]" % (t_cd)
         return InvertComDist( t_cd/pars.HubbleDistance() )
 
-
     # Luminosity Distance
-    if( t_sets.ld_target >= 0.0 ):
-        t_ld = DistToCM(t_sets, t_sets.ld_target)
-        if( t_sets.verbose ): print " - Luminosity Distance, %.2e [cm]" % (t_ld)
+    if( sets.ld_target >= 0.0 ):
+        t_ld = DistToCM(sets.ld_target)
+        if( sets.verbose ): print " - Luminosity Distance, %.2e [cm]" % (t_ld)
         return InvertLumDist( t_ld/pars.HubbleDistance() )
 
-
     # Look-back Time
-    if( t_sets.tl_target >= 0.0 ):
-        t_tl = TimeToS(t_sets, t_sets.tl_target)
-        if( t_sets.verbose ): print " - Look-back Time, %.2e [s]" % (t_tl)
+    if( sets.tl_target >= 0.0 ):
+        t_tl = TimeToS(sets.tl_target)
+        if( sets.verbose ): print " - Look-back Time, %.2e [s]" % (t_tl)
         return InvertLookTime( t_tl/pars.HubbleTime() )
 
-
     # Universe Age Time
-    if( t_sets.ta_target >= 0.0 ):
-        t_ta = TimeToS(t_sets, t_sets.ta_target)
-        if( t_sets.verbose ): print " - Age of the Universe, %.2e [s]" % (t_ta)
+    if( sets.ta_target >= 0.0 ):
+        t_ta = TimeToS(sets.ta_target)
+        if( sets.verbose ): print " - Age of the Universe, %.2e [s]" % (t_ta)
         return InvertAgeTime( t_ta/pars.HubbleTime() )
 
-
-    raise RuntimeError('Must specify a single target parameter.')
 
     
 
@@ -329,20 +325,26 @@ def ParseArgs():
 
     parser          = ArgumentParser()
 
+    # Target Parameters
     parser.add_argument('-z',         type=float, default=sets.z_target,       help='Target redshift z'                                        )
     parser.add_argument('-cd','-dc',  type=float, default=sets.cd_target,      help='Target coming distance D_C'                               )
     parser.add_argument('-ld','-dl',  type=float, default=sets.ld_target,      help='Target luminosity distance D_C'                           )
     parser.add_argument('-tl','-lt',  type=float, default=sets.tl_target,      help='Target look-back time T_L'                                )
     parser.add_argument('-ta','-at',  type=float, default=sets.ta_target,      help='Target universe age T_A'                                  )
 
-    parser.add_argument('--print', dest='prt',  action='store_true', default=sets.print_flag, help="Print defaul cosmological parameters"                  )
-
+    # Modifiers
     parser.add_argument('--pc',                 action='store_true', default=sets.use_pc , help="Use provided distance ('-cd' or '-ld') in parsecs"     )
     parser.add_argument('--mpc',                action='store_true', default=sets.use_mpc, help="Use provided distance ('-cd' or '-ld') in megaparsecs" )
     parser.add_argument('--ly',                 action='store_true', default=sets.use_ly , help="Use provided distance ('-cd' or '-ld') in lightyears"  )
-
     parser.add_argument('--yr',                 action='store_true', default=sets.use_yr , help="Use provided time ('-lt' or '-at') in years"           )
     parser.add_argument('--myr',                action='store_true', default=sets.use_myr, help="Use provided time ('-lt' or '-at') in megayears"       )
+
+    # Behavior
+    parser.add_argument('--print', dest='prt',  action='store_true', default=sets.print_flag, help="Print defaul cosmological parameters"                  )
+
+    # Modify Cosmological Parameters
+    parser.add_argument('--h0',  type=float, default=pars.H0,      help='Hubble Constant (H0) [km/s/Mpc]'                                )
+    parser.add_argument('--t0',  type=float, default=pars.T0,      help='Hubble Time (T0) [1/s]'                                         )
 
 
     args            = parser.parse_args()
@@ -371,14 +373,17 @@ def main():
     sets         = Settings()                                                                       # Create a Settings object
     pars         = Parameters()                                                                     # Create a Cosmological Parameters Object
     sets         = ParseArgs()                                                                      # Modify settings based on user arguments
+    
+    # Check if targets have been properly set
+    retval = CheckTargets()
 
     # Print Cosmological parameters
-    if( sets.print_flag ):
-        print pars.ParameterString()
-        exit(1)
+    if( sets.print_flag ): print pars.ParameterString()
 
-    redshift     = RedshiftFromTarget(sets)                                                         # Determine target redshift based on any user input
-    cosmo_params = CosmologicalParameters(redshift, pout=True)                                      # Determine cosmological parameters based on target redshift
+    # Determine target and calculate
+    if( retval ):
+        redshift     = RedshiftFromTarget()                                                         # Determine target redshift based on any user input
+        cosmo_params = CosmologicalParameters(redshift, pout=True)                                  # Determine cosmological parameters based on target redshift
 
 
 
