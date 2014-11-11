@@ -42,7 +42,8 @@ class Settings(object):
     use_myr    = False                                                                              # Use input time     in megayears
 
     # Target epochs (calculate epoch based on given parameter below)
-    z_target   = -1.0                                                                               # Redshift
+    z_target   = -1.0                                                                               # Redshift (z)
+    a_target   = -1.0                                                                               # Scale Factor (a)
     cd_target  = -1.0                                                                               # Comoving Distance
     ld_target  = -1.0                                                                               # Luminosity Distance
     tl_target  = -1.0                                                                               # Lookback time
@@ -172,6 +173,10 @@ def IntegrateTime(z0, z1):
 
 def RootFind(func): return sp.optimize.newton( func, 1.0, tol=sets.root_tol )
 
+def InvertScaleFactor(ascale):
+    """Find redshift from Scale-Factor"""
+    return (1.0/ascale) - 1.0
+
 def InvertComDist(cdist):
     """Given a comoving-distance, find redshift."""
     rhs = lambda x: IntegrateDistance(0.0, x)[0] - cdist
@@ -202,8 +207,10 @@ def CosmologicalParameters(redz, pout=False):
     
     dist, dist_err = IntegrateDistance(0.0, redz)
     time, time_err = IntegrateTime(0.0, redz)
+    scaleFactor = 1.0/(1.0+redz)
 
-    retstr = "z = %e\n" % (redz)
+    retstr  = "z = %e\n" % (redz)
+    retstr += "a = %e\n" % (scaleFactor)
 
     # Comoving Distance
     comDist       = pars.HubbleDistance()*dist
@@ -262,8 +269,8 @@ def CheckTargets():
     """Make sure that one and only one target parameter has been set."""
 
     # Create list of all possible targets
-    all_targets = [ sets.z_target , sets.cd_target, sets.ld_target,
-                    sets.tl_target, sets.ta_target                   ]
+    all_targets = [ sets.z_target , sets.a_target, sets.cd_target, sets.ld_target,
+                    sets.tl_target, sets.ta_target ]
 
     # Unspecified targets are negative; make sure only one is positive
     num_targs = sum(tarz >= 0.0 for tarz in all_targets)
@@ -274,6 +281,7 @@ def CheckTargets():
 
     return False
     
+
 
 def RedshiftFromTarget():
     """
@@ -289,6 +297,11 @@ def RedshiftFromTarget():
     if( sets.z_target >= 0.0 ): 
         if( sets.verbose ): print " - Redshift"
         return sets.z_target
+
+    # Scale-factor
+    if( sets.a_target >= 0.0 ): 
+        if( sets.verbose ): print " - Scale-factor"
+        return InvertScaleFactor(sets.a_target)
 
     # Comoving Distance
     if( sets.cd_target >= 0.0 ):
@@ -327,6 +340,7 @@ def ParseArgs():
 
     # Target Parameters
     parser.add_argument('-z',         type=float, default=sets.z_target,       help='Target redshift z'                                        )
+    parser.add_argument('-a',         type=float, default=sets.a_target,       help='Target scale factor a'                                    )
     parser.add_argument('-cd','-dc',  type=float, default=sets.cd_target,      help='Target coming distance D_C'                               )
     parser.add_argument('-ld','-dl',  type=float, default=sets.ld_target,      help='Target luminosity distance D_C'                           )
     parser.add_argument('-tl','-lt',  type=float, default=sets.tl_target,      help='Target look-back time T_L'                                )
@@ -355,6 +369,7 @@ def ParseArgs():
     sets.print_flag = args.prt
 
     sets.z_target   = float(args.z)
+    sets.a_target   = float(args.a)
     sets.cd_target  = float(args.cd)
     sets.ld_target  = float(args.ld)
     sets.tl_target  = float(args.tl)
