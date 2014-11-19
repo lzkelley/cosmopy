@@ -40,6 +40,7 @@ Changes
 
 To-Do
 -----
+- 'Solve()' and or 'CosmologicalParameters()' should really return a dictionary
 - CMB Temperature
 - Produce plots of distances over redshift (and time)
 - Allow negative target values (i.e. look to future)

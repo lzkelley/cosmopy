@@ -19,11 +19,6 @@ import scipy.integrate
 from argparse import ArgumentParser
 
 
-# Global Variables (initialized in 'main')
-#sets = None
-#pars = None
-
-
 
 class Settings(object):
     """
@@ -218,26 +213,26 @@ def CosmologicalParameters(redz, pout=False):
     errs = []
     retstr = ""
 
-    # Store Redshift
+    # Store Redshift [0]
     pars.append(redz)
     errs.append(0.0)
     rstr = "z = %e" % (redz)
     retstr += rstr + "\n"
-    #strs.append(rstr)
 
-    # Store scale-factor
+
+    # Store scale-factor [1]
     scaleFactor = 1.0/(1.0+redz)
     pars.append(scaleFactor)
     errs.append(0.0)
     rstr = "a = %e" % (scaleFactor)
     retstr += rstr + "\n"
-    #strs.append(rstr)
+
 
     # Integrate over redshift to find distance and time with errors
     dist, dist_err = IntegrateDistance(0.0, redz)
     time, time_err = IntegrateTime(0.0, redz)
 
-    # Comoving Distance
+    # Comoving Distance [2]
     comDist       = Parameters.HubbleDistance()*dist
     comDist_err   = Parameters.HubbleDistance()*dist_err
     pars.append(comDist)
@@ -245,9 +240,9 @@ def CosmologicalParameters(redz, pout=False):
     rstr          = "D_C  =  %+e +- %e  [cm]  ~  %+e [Mpc] : Comoving Distance" % \
                     (comDist, comDist_err, comDist/(1.0e6*Parameters.parsec) )
     retstr       += rstr + "\n"
-    #strs.append(rstr)
 
-    # Luminosity Distance
+
+    # Luminosity Distance [3]
     lumDist       = (1.0 + redz)*comDist
     lumDist_err   = (1.0 + redz)*comDist_err
     pars.append(lumDist)
@@ -255,9 +250,9 @@ def CosmologicalParameters(redz, pout=False):
     rstr          = "D_L  =  %+e +- %e  [cm]  ~  %+e [Mpc] : Luminosity Distance" % \
                     (lumDist, lumDist_err, lumDist/(1.0e6*Parameters.parsec) )
     retstr       += rstr + "\n"
-    #strs.append(rstr)
 
-    # Angular Diameter Distance
+
+    # Angular Diameter Distance [4]
     angDist       = comDist/(1.0 + redz)
     angDist_err   = comDist_err/(1.0 + redz)
     pars.append(angDist)
@@ -265,9 +260,9 @@ def CosmologicalParameters(redz, pout=False):
     rstr          = "D_A  =  %+e +- %e  [cm]  ~  %+e [Mpc] : Angular Diameter Distance" % \
                     (angDist, angDist_err, lumDist/(1.0e6*Parameters.parsec)) 
     retstr       += rstr + "\n"
-    #strs.append(rstr)
 
-    # Arcsecond size
+
+    # Arcsecond size [5]
     arcSize       = Parameters.arcsec*angDist
     arcSize_err   = Parameters.arcsec*angDist_err
     pars.append(arcSize)
@@ -275,9 +270,9 @@ def CosmologicalParameters(redz, pout=False):
     rstr          = "Arc  =  %+e +- %e  [cm]  ~  %+e [pc]  : Arcsecond Transverse Distance" % \
                     (arcSize, arcSize_err, arcSize/(Parameters.parsec) )
     retstr       += rstr + "\n"
-    #strs.append(rstr)
 
-    # Lookback Time
+
+    # Lookback Time [6]
     lookTime      = Parameters.HubbleTime()*time
     lookTime_err  = Parameters.HubbleTime()*time_err
     pars.append(lookTime)
@@ -285,9 +280,9 @@ def CosmologicalParameters(redz, pout=False):
     rstr          = "T_L  =  %+e +- %e  [s]   ~  %+e [Myr] : Lookback Time" % \
                     (lookTime, lookTime_err, lookTime/(1.0e6*Parameters.year) )
     retstr       += rstr + "\n"
-    #strs.append(rstr)
 
-    # Age
+
+    # Age [7]
     ageTime       = Parameters.HubbleTime()*(1.0-time)
     ageTime_err   = lookTime_err
     pars.append(ageTime)
@@ -295,16 +290,15 @@ def CosmologicalParameters(redz, pout=False):
     rstr          = "T_A  =  %+e +- %e  [s]   ~  %+e [Myr] : Age of the Universe" % \
                     (ageTime, ageTime_err, ageTime/(1.0e6*Parameters.year) )
     retstr       += rstr + "\n"
-    #strs.append(rstr)
 
-    # Distance Modulus
-    distMod       = 5.0*np.log10(lumDist/(Parameters.parsec*10.0))
+
+    # Distance Modulus [8]
+    distMod       = 5.0*np.log10(lumDist/(Parameters.parsec*10.0)) if lumDist > 0.0 else 0.0
     distMod_err   = 5.0*np.log10(lumDist_err/(Parameters.parsec*10.0)) if lumDist_err > 0.0 else 0.0
     pars.append(distMod)
     errs.append(distMod_err)
     rstr          = "DM   =  %+e +- %e  []    Distance Modulus" % (distMod, np.abs(distMod_err) )
     retstr       += rstr + "\n"
-    #strs.append(rstr)
 
     if( pout ): print retstr
 
