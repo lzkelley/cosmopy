@@ -333,7 +333,7 @@ def solve(z=None, a=None, cd=None, ld=None, lt=None, t=None, verbose=False, pout
 
     # Look-back Time
     elif( lt != None ):
-        t_tl = TimeToS(tl)
+        t_tl = TimeToS(lt)
         if( verbose ): print " - Look-back Time, %.2e [s]" % (t_tl)
         redz = InvertLookTime( t_tl/Parameters.HubbleTime() )
 
