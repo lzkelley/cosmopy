@@ -1,1 +1,1 @@
-python setup.py develop --user
+python setup.py develop

@@ -15,6 +15,11 @@ setup(
     url="https://bitbucket.org/lzkelley/zcode/",
     packages=['cosmocalc'],
     include_package_data=True,
+    entry_points={
+        'console_scripts': [
+            'cosmo = cosmocalc.__main__:main'
+        ]
+    },
     install_requires=requirements,
     long_description=readme,
     classifiers=[
