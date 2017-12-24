@@ -7,6 +7,10 @@ import scipy.optimize
 import scipy.integrate  # noqa
 
 
+from . settings import Settings
+from . parameters import Parameters
+
+
 def DistToCM(indist):
     """
     Based on unit settings, convert distance to centimeters.

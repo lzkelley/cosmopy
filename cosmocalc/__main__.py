@@ -8,9 +8,8 @@ from . settings import Settings
 from . parameters import Parameters
 
 
-def ParseArgs():
-    """
-    Initialize the argparse object with desired command line options, then retrieve their values.
+def parse_args():
+    """Initialize desired command line options, retrieve their values.
     """
 
     parser = ArgumentParser()
@@ -83,7 +82,7 @@ def main():
     # Create a Cosmological Parameters Object
     pars = Parameters()
     # Modify settings and parameters based on user arguments
-    sets, pars = ParseArgs()
+    sets, pars = parse_args()
 
     # Print Cosmological parameters
     if Settings.print_flag:
