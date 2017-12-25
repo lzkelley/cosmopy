@@ -2,7 +2,6 @@
 """
 from collections import namedtuple
 from argparse import ArgumentParser
-# import re
 
 import numpy as np
 import astropy as ap
