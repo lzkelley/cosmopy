@@ -1,27 +1,18 @@
 """
 """
 
-import os
-
 import numpy as np
 import scipy as sp
 import scipy.interpolate  # noqa
 import astropy as ap
 import astropy.cosmology  # noqa
 
-INTERP = "quadratic"                     # Type of interpolation for scipy
-FLT_TYPE = np.float32
-IMPOSE_FLOOR = True                # Enforce a minimum for certain parameters (e.g. comDist)
-MAXIMUM_SCALE_FACTOR = 0.9999      # Scalefactor for minimum of certain parameters (e.g. comDist)
-
 
 class Cosmology(ap.cosmology.FlatLambdaCDM):
-    """
+    """Class for calculating (and inverting) cosmological distance measures.
 
     Methods
     -------
-    -   scale_to_age         - Convert from scale-factor to age of the universe [seconds].
-    -   age_to_scale         - Convert from age of the universe [seconds] to scale-factor.
 
     """
     Omega0 = 0.2726
@@ -49,10 +40,11 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
         self._grid_age = self.age(zgrid).cgs.value
         self._sort_age = np.argsort(self._grid_age)
         #    Comoving distances in centimeters
-        # self._grid_comdist = self.comoving_distance(zgrid).cgs.value
-        # self._sort_comdist = np.argsort(self._grid_comdist)
-        #    Comoving volume of the universe
-        # self._grid_comvol = self.comoving_volume(zgrid).cgs.value
+        self._grid_dcom = self.comoving_distance(zgrid).cgs.value
+        self._sort_dcom = np.argsort(self._grid_dcom)
+        #    Comoving distances in centimeters
+        self._grid_dlum = self.comoving_distance(zgrid).cgs.value
+        self._sort_dlum = np.argsort(self._grid_dlum)
         return
 
     def _init_interp_grid(self, z_pnts, num_pnts):
@@ -110,28 +102,24 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
     def _interp(vals, xx, yy, inds=None):
         if inds is None:
             inds = np.argsort(xx)
-        # PchipInterpolate guarantees monotonicity with higher order.  Gives more accurate results.
+        # PchipInterpolate guarantees monotonicity with higher order
         arrs = sp.interpolate.PchipInterpolator(xx[inds], yy[inds], extrapolate=False)(vals)
         return arrs
-
-    '''
-    def scale_to_age(self, sf):
-        """Convert from scale-factor to age of the universe [seconds].
-        """
-        zz = self._scale_to_z(sf)
-        age = self.age(zz).cgs.value
-        return age
-
-    def scale_to_comdist(self, sf):
-        """Convert from scale-factor to comoving distance [cm].
-        """
-        zz = self._scale_to_z(sf)
-        comdist = self.comoving_distance(zz).cgs.value
-        return comdist
-    '''
 
     def tage_to_z(self, age):
         """Convert from age of the universe [seconds] to redshift.
         """
         zz = self._interp(age, self._grid_age, self._grid_z, self._sort_age)
+        return zz
+
+    def dcom_to_z(self, dc):
+        """Convert from comoving-distance [cm] to redshift.
+        """
+        zz = self._interp(dc, self._grid_dcom, self._grid_z, self._sort_dcom)
+        return zz
+
+    def dlum_to_z(self, dl):
+        """Convert from luminosity-distance [cm] to redshift.
+        """
+        zz = self._interp(dl, self._grid_dlum, self._grid_z, self._sort_dlum)
         return zz

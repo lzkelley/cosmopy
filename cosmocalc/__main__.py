@@ -38,6 +38,24 @@ def calc(cosmo, args):
         redz = cosmo.tage_to_z(tage.cgs.value)
         _vals[2] = tlbk
         _vals[3] = tage
+    # Comoving Distance
+    elif args.dc is not None:
+        dcom = parse_input(args.dc, U_CM)
+        redz = cosmo.dcom_to_z(dcom.cgs.value)
+        _vals[1] = dcom
+        # Calculate luminosity-distance manually
+        _vals[0] = dcom * (1.0 + redz)
+    # Luminosity Distance
+    elif args.dl is not None:
+        dlum = parse_input(args.dl, U_CM)
+        redz = cosmo.dcom_to_z(dlum.cgs.value)
+        _vals[1] = dlum / (1.0 + redz)
+        # Calculate luminosity-distance manually
+        _vals[0] = dlum
+    else:
+        print("__main__.calc()")
+        print("\t`args` = '{}'".format(args))
+        raise ValueError("No input given!")
 
     scale = cosmo._z_to_a(redz) if scale is None else scale
 
@@ -92,63 +110,8 @@ def output(results):
         rstr = "{base:30s}{conv:20s} : {name}".format(base=base, conv=conv, name=nn)
         rets.append(rstr)
 
-    print("\n".join(rets) + "\n")
+    print("\n" + "\n".join(rets) + "\n")
     return
-
-
-'''
-def parse_input(inval):
-    """Convert an input string value into a number, possibly with units.
-
-    e.g. "2.3e12 cm" will be parsed into an `astropy.units.quantity.Quantity`
-    """
-    err = ""
-
-    # See if this is just a float value
-    try:
-        val = np.float(inval)
-    except ValueError:
-        err += "Could not convert '{}' directly to float".format(inval)
-        pass
-    else:
-        return val
-
-    # Try to parse out units
-    # ----------------------
-
-    # Including exponential-notation (e.g. '2.2e23')
-    # vals = re.split('([\d.]+e[-+\d]+)', '2.2e+23 cm')
-    print("inval = ", inval)
-    vals = re.split('([-+\d.]+e[-+\d]+)', inval)
-    print(vals)
-    if len(vals) > 1:
-        vals = [vv.strip() for vv in vals if len(vv) > 0]
-        if len(vals) == 2:
-            try:
-                val = np.float(vals[0]) * ap.units.Unit(vals[1])
-            except Exception:
-                err += "\nCould not convert '{}' into an exponential number".format(vals)
-                pass
-            else:
-                return val
-
-    print("inval = ", inval)
-    vals = re.split('([-+\d.]+)', inval)
-    print(vals)
-    if len(vals) > 1:
-        vals = [vv.strip() for vv in vals if len(vv) > 0]
-        if len(vals) == 2:
-            try:
-                val = np.float(vals[0]) * ap.units.Unit(vals[1])
-            except Exception:
-                err += "\nCould not convert '{}' into a number".format(vals)
-                pass
-            else:
-                return val
-
-    print("\n\n" + "__main__.parse_input :: \n" + err)
-    raise ValueError("Failed to convert '{}'".format(inval))
-'''
 
 
 def parse_input(inval, unit=None):
@@ -178,7 +141,7 @@ def parse_args():
     """Initialize desired command line options, retrieve their values.
     """
 
-    parser = ArgumentParser()
+    parser = ArgumentParser(description="CosmoCalc: cosmological calculator.")
 
     # Target Parameters
     parser.add_argument('-z', type=float, default=None,
@@ -194,12 +157,7 @@ def parse_args():
     parser.add_argument('-ta', '-at', default=None,
                         help='Target universe age T_A')
 
-    # Modifiers
     '''
-
-    # Behavior
-    parser.add_argument('--print', dest='prt', action='store_true', default=Settings.print_flag, help="Print defaul cosmological parameters")
-
     # Modify Cosmological Parameters
     parser.add_argument('--H0', '--h0', type=float, metavar='', default=Parameters.H0, help='Hubble Constant (H0) [km/s/Mpc]')
     parser.add_argument('--T0', '--t0', type=float, metavar='', default=Parameters.T0, help='Hubble Time (T0) [1/s]')
@@ -214,17 +172,11 @@ def parse_args():
 
 
 def main():
-
-    print("\ncosmocalc")
     args = parse_args()
-    print(args)
     cosmo = Cosmology(args)
-    print(cosmo)
 
     results = calc(cosmo, args)
-    print(results)
 
-    print("")
     output(results)
 
     return
