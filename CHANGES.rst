@@ -1,20 +1,42 @@
 CHANGES
 =======
 
+
 To-Do
 -----
-    -   'Solve()' and or 'CosmologicalParameters()' should really return a dictionary
-    -   CMB Temperature
-    -   Produce plots of distances over redshift (and time)
-    -   Allow negative target values (i.e. look to future)
-    -   Add initial guess for redshift (etc)
-    -   Determine values between pairs of redshifts (instead of always relative to zero)
-    -   Allow lists of target values (instead of single) --- this can be done via API (i.e. import) but not from the command line yet.
-
+    - CMB Temperature
+    - Allow lists of target values (instead of single) --- this can be done via API (i.e. import) but not from the command line yet.
+    - Load requirements and version file in `setup.py`.
+    
 
 Current
 -------
 
+
+v3.0 - 2017-12-24
+-----------------
+    - Completely restructured and rewrote code to use an `astropy.cosmology.FlatLambdaCDM` subclass for bulk of cosmological calculations.  This class uses stored grids of distance measures to perform interpolation when inverting from a distance measure to a redshift.
+    - The basic functionality is working in which an input redshift, scale-factor, distance (lum or com), of time (age or lookback) can be input, and all of the other parameters will be calculated and printed.
+
+
+    - cosmocalc/
+        - __main__.py
+            - This provides the entire API for command-line accessible functions (at the moment).
+            - `parse_input()` [NEW-FUNCTION]
+                - Take an input string which specifies a quantitative value and convert it into a usable numerical object using `astropy.units.Quantity`.
+            - `calc()`
+                - Runs all of the basic cosmological calculations.
+            - `output()`
+                - Format and print the resulting values.
+        - cosmology.py [NEW-FILE]
+            - Cosmology [NEW-CLASS]
+                - Currently uses fixed set of cosmological parameters (i.e. Omega values) and calculated distance measures.
+        - tests/ [NEW-FOLDER]
+            - test_main.py [NEW-FILE]
+                - Added a few very simple tests for parsing input values.
+
+    - parameters.py [DELETED]
+    - settings.py [DELETED]
 
 
 v2.0 - 2014-11-11
