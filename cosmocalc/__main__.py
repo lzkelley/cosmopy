@@ -2,26 +2,32 @@
 """
 from collections import namedtuple
 from argparse import ArgumentParser
+# import re
 
 import numpy as np
+import astropy as ap
 
-# from . import cosmocalc
-# from . settings import Settings
-# from . parameters import Parameters
 from . cosmology import Cosmology
-from . import PC, ARCSEC
+from . import PC, ARCSEC, U_SEC, U_CM
 
 funcs = ['luminosity_distance', 'comoving_distance', 'lookback_time', 'age']
-
 
 _RES_PARS = ["redz", "scale", "dlum", "dcom", "tlbk", "tage"]
 Results = namedtuple("Results", _RES_PARS)
 
 
 def calc(cosmo, args):
+    scale = None
     if args.z is not None:
         redz = args.z
-        scale = cosmo._z_to_a(redz)
+    elif args.a is not None:
+        scale = args.a
+        redz = cosmo._a_to_z(scale)
+    elif args.ta is not None:
+        tage = parse_input(args.ta, U_SEC)
+        redz = cosmo.tage_to_z(tage)
+
+    scale = cosmo._z_to_a(redz) if scale is None else scale
 
     _vals = [getattr(cosmo, ff)(redz) for ff in funcs]
     results = Results(redz, scale, *_vals)
@@ -52,8 +58,18 @@ def output(results):
 
     rets = []
     for vv, ss, tt, nn in zip(vals, symbs, types, names):
+        try:
+            vv = vv.item()
+        except AttributeError:
+            pass
         v_std = vv if tt is None else vv.to(tt)
-        base = "{:>10s} = {:.4f}".format(ss, v_std)
+        try:
+            base = "{:>10s} = {:.4f}".format(ss, v_std)
+        except Exception:
+            print("Failed constructing `base` string on '{}' ({})".format(nn, ss))
+            print("  Value = '{}', type = '{}'".format(v_std, type(v_std)))
+            raise
+
         try:
             v_cgs = vv.cgs
             conv = " ~ {:.4e}".format(v_cgs)
@@ -63,8 +79,86 @@ def output(results):
         rstr = "{base:30s}{conv:20s} : {name}".format(base=base, conv=conv, name=nn)
         rets.append(rstr)
 
-    print("\n".join(rets))
+    print("\n".join(rets) + "\n")
     return
+
+
+'''
+def parse_input(inval):
+    """Convert an input string value into a number, possibly with units.
+
+    e.g. "2.3e12 cm" will be parsed into an `astropy.units.quantity.Quantity`
+    """
+    err = ""
+
+    # See if this is just a float value
+    try:
+        val = np.float(inval)
+    except ValueError:
+        err += "Could not convert '{}' directly to float".format(inval)
+        pass
+    else:
+        return val
+
+    # Try to parse out units
+    # ----------------------
+
+    # Including exponential-notation (e.g. '2.2e23')
+    # vals = re.split('([\d.]+e[-+\d]+)', '2.2e+23 cm')
+    print("inval = ", inval)
+    vals = re.split('([-+\d.]+e[-+\d]+)', inval)
+    print(vals)
+    if len(vals) > 1:
+        vals = [vv.strip() for vv in vals if len(vv) > 0]
+        if len(vals) == 2:
+            try:
+                val = np.float(vals[0]) * ap.units.Unit(vals[1])
+            except Exception:
+                err += "\nCould not convert '{}' into an exponential number".format(vals)
+                pass
+            else:
+                return val
+
+    print("inval = ", inval)
+    vals = re.split('([-+\d.]+)', inval)
+    print(vals)
+    if len(vals) > 1:
+        vals = [vv.strip() for vv in vals if len(vv) > 0]
+        if len(vals) == 2:
+            try:
+                val = np.float(vals[0]) * ap.units.Unit(vals[1])
+            except Exception:
+                err += "\nCould not convert '{}' into a number".format(vals)
+                pass
+            else:
+                return val
+
+    print("\n\n" + "__main__.parse_input :: \n" + err)
+    raise ValueError("Failed to convert '{}'".format(inval))
+'''
+
+
+def parse_input(inval, unit=None):
+    """Convert an input string value into a number, possibly with units.
+
+    e.g. "2.3e12 cm" will be parsed into an `astropy.units.quantity.Quantity`
+    """
+    try:
+        val = np.float(inval)
+    except ValueError:
+        try:
+            val = ap.units.quantity.Quantity(inval)
+        except Exception:
+            print("__main__.parse_input()")
+            print("Failed to convert '{}'".format(inval))
+            raise
+    else:
+        if unit is not None:
+            val = val * unit
+
+    val = val.cgs.value
+
+    return val
 
 
 def parse_args():
@@ -78,13 +172,13 @@ def parse_args():
                         help='Target redshift z')
     parser.add_argument('-a', type=float, default=None,
                         help='Target scale factor a')
-    parser.add_argument('-cd', '-dc', type=float, default=None,
+    parser.add_argument('-cd', '-dc', default=None,
                         help='Target coming distance D_C')
-    parser.add_argument('-ld', '-dl', type=float, default=None,
+    parser.add_argument('-ld', '-dl', default=None,
                         help='Target luminosity distance D_L')
-    parser.add_argument('-lt', '-tl', type=float, default=None,
+    parser.add_argument('-lt', '-tl', default=None,
                         help='Target look-back time T_L')
-    parser.add_argument('-ta', '-at', type=float, default=None,
+    parser.add_argument('-ta', '-at', default=None,
                         help='Target universe age T_A')
 
     # Modifiers

@@ -30,22 +30,18 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
     HubbleParam = 0.704
     H0 = HubbleParam * 100.0
 
-    _Z_GRID = [10.0, 4.0, 2.0, 1.0, 0.5, 0.1]
+    # z=0.0 is added automatically
+    _Z_GRID = [1000.0, 10.0, 4.0, 2.0, 1.0, 0.5, 0.1, 0.01]
+    _INTERP_POINTS = 20
 
-    def __init__(self, args, interp_points=100):
+    def __init__(self, args):
         # Initialize parent class
         super().__init__(H0=self.H0, Om0=self.Omega0, Ob0=self.OmegaBaryon)
-        return
 
         # Create grids for interpolations
         # -------------------------------
-        #    Set the first point to be the highest redshift of the snapshots
-        min_scale = np.min(self.snapshot_scales)
-        max_redz = self._scale_to_z(min_scale)
-        z_grid_pnts = np.append(max_redz, self._Z_GRID)
-
-        #    Create a grid in redshift (float64)
-        zgrid = self._init_interp_grid(z_grid_pnts, interp_points)
+        #    Create a grid in redshift
+        zgrid = self._init_interp_grid(self._Z_GRID, self._INTERP_POINTS)
         self._grid_z = zgrid
         self._sort_z = np.argsort(zgrid)
         # Calculate corresponding values in desired parameters
@@ -134,8 +130,8 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
         return comdist
     '''
 
-    def age_to_scale(self, age):
-        """Convert from age of the universe [seconds] to scale-factor.
+    def tage_to_z(self, age):
+        """Convert from age of the universe [seconds] to redshift.
         """
         zz = self._interp(age, self._grid_age, self._grid_z, self._sort_age)
-        return self.scale_factor(zz)
+        return zz
