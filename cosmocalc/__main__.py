@@ -18,18 +18,31 @@ Results = namedtuple("Results", _RES_PARS)
 
 def calc(cosmo, args):
     scale = None
+    _vals = [None, None, None, None]
+    # Redshift
     if args.z is not None:
         redz = args.z
+    # Scalefactor
     elif args.a is not None:
         scale = args.a
         redz = cosmo._a_to_z(scale)
+    # Age of the Universe
     elif args.ta is not None:
         tage = parse_input(args.ta, U_SEC)
-        redz = cosmo.tage_to_z(tage)
+        redz = cosmo.tage_to_z(tage.cgs.value)
+        _vals[3] = tage
+    # Loockback Time
+    elif args.tl is not None:
+        tlbk = parse_input(args.tl, U_SEC)
+        tage = cosmo.hubble_time - tlbk
+        redz = cosmo.tage_to_z(tage.cgs.value)
+        _vals[2] = tlbk
+        _vals[3] = tage
 
     scale = cosmo._z_to_a(redz) if scale is None else scale
 
-    _vals = [getattr(cosmo, ff)(redz) for ff in funcs]
+    _vals = [getattr(cosmo, ff)(redz) if vv is None else vv
+             for ff, vv in zip(funcs, _vals)]
     results = Results(redz, scale, *_vals)
     return results
 
@@ -156,7 +169,7 @@ def parse_input(inval, unit=None):
         if unit is not None:
             val = val * unit
 
-    val = val.cgs.value
+    # val = val.cgs.value
 
     return val
 
@@ -172,11 +185,11 @@ def parse_args():
                         help='Target redshift z')
     parser.add_argument('-a', type=float, default=None,
                         help='Target scale factor a')
-    parser.add_argument('-cd', '-dc', default=None,
+    parser.add_argument('-dc', '-cd', default=None,
                         help='Target coming distance D_C')
-    parser.add_argument('-ld', '-dl', default=None,
+    parser.add_argument('-dl', '-ld', default=None,
                         help='Target luminosity distance D_L')
-    parser.add_argument('-lt', '-tl', default=None,
+    parser.add_argument('-tl', '-lt', default=None,
                         help='Target look-back time T_L')
     parser.add_argument('-ta', '-at', default=None,
                         help='Target universe age T_A')
