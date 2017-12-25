@@ -1,7 +1,7 @@
 """
 """
 
-
+'''
 class Settings:
     """Object to store the current configuration of CosmoCalc.
     """
@@ -43,3 +43,4 @@ class Settings:
     root_tol = 1.0e-10
     # Number of iterations for quadrature
     quad_iter = 1000
+'''
