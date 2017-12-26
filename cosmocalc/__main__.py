@@ -1,6 +1,6 @@
 """
 """
-from collections import namedtuple
+# from collections import namedtuple
 from argparse import ArgumentParser
 
 import numpy as np
@@ -9,13 +9,13 @@ import astropy as ap
 from . cosmology import Cosmology
 from . import PC, ARCSEC, U_SEC, U_CM
 
-funcs = ['luminosity_distance', 'comoving_distance', 'lookback_time', 'age']
+_RESULTS_FUNCS = ['luminosity_distance', 'comoving_distance', 'lookback_time', 'age']
 
-_RES_PARS = ["redz", "scale", "dlum", "dcom", "tlbk", "tage"]
-Results = namedtuple("Results", _RES_PARS)
+_RESULTS_FUNC_PARS = ['dl', 'dc', 'tl', 'ta']
+_RESULTS_PARS = ['z', 'a'] + _RESULTS_FUNC_PARS
 
 
-def calc(cosmo, args):
+def calc_basic(cosmo, args):
     """Given a `Cosmology` instance and input arguments, calculate basic cosmological values.
 
     Parameters
@@ -33,7 +33,8 @@ def calc(cosmo, args):
 
     """
     scale = None
-    _vals = [None, None, None, None]
+
+    results = {kk: None for kk in _RESULTS_PARS}
 
     # Redshift
     if args.z is not None:
@@ -48,31 +49,33 @@ def calc(cosmo, args):
     elif args.ta is not None:
         tage = parse_input(args.ta, U_SEC)
         redz = cosmo.tage_to_z(tage.cgs.value)
-        _vals[3] = tage
+        results['ta'] = tage
 
     # Loockback Time
     elif args.tl is not None:
         tlbk = parse_input(args.tl, U_SEC)
         tage = cosmo.hubble_time - tlbk
         redz = cosmo.tage_to_z(tage.cgs.value)
-        _vals[2] = tlbk
-        _vals[3] = tage
+        results['ta'] = tage
+        results['tl'] = tlbk
 
     # Comoving Distance
     elif args.dc is not None:
         dcom = parse_input(args.dc, U_CM)
         redz = cosmo.dcom_to_z(dcom.cgs.value)
-        _vals[1] = dcom
         # Calculate luminosity-distance manually
-        _vals[0] = dcom * (1.0 + redz)
+        dlum = dcom * (1.0 + redz)
+        results['dc'] = dcom
+        results['dl'] = dlum
 
     # Luminosity Distance
     elif args.dl is not None:
         dlum = parse_input(args.dl, U_CM)
-        redz = cosmo.dcom_to_z(dlum.cgs.value)
-        _vals[1] = dlum / (1.0 + redz)
-        # Calculate luminosity-distance manually
-        _vals[0] = dlum
+        redz = cosmo.dlum_to_z(dlum.cgs.value)
+        # Calculate comoving-distance manually
+        dcom = dlum / (1.0 + redz)
+        results['dc'] = dcom
+        results['dl'] = dlum
 
     # No arguments set, raise error
     else:
@@ -82,11 +85,27 @@ def calc(cosmo, args):
 
     # Calculate scale-factor if needed
     scale = cosmo._z_to_a(redz) if scale is None else scale
+    results['a'] = scale
+    results['z'] = redz
 
     # Calculate the values not already set
-    _vals = [getattr(cosmo, ff)(redz) if vv is None else vv
-             for ff, vv in zip(funcs, _vals)]
-    results = Results(redz, scale, *_vals)
+    for pp, ff in zip(_RESULTS_FUNC_PARS, _RESULTS_FUNCS):
+        if results[pp] is None:
+            func = getattr(cosmo, ff)
+            results[pp] = func(redz)
+
+    return results
+
+
+def calc_derived(results):
+    dang = results['dc']/(1.0 + results['z'])
+    darc = dang*ARCSEC
+    dist_mod = 5.0*np.log10(results['dl'].cgs.value/(10.0*PC))
+
+    results['da'] = dang
+    results['arc'] = darc
+    results['dm'] = dist_mod
+
     return results
 
 
@@ -100,14 +119,9 @@ def output(results):
 
     """
 
-    dang = results.dcom/(1.0 + results.redz)
-    darc = dang*ARCSEC
-    dist_mod = 5.0*np.log10(results.dlum.cgs.value/(10.0*PC))
-
-    vals = [results.redz, results.scale, results.dcom, results.dlum,
-            dang, darc, results.tlbk,
-            results.tage, dist_mod]
-
+    keys = ['z', 'a', 'dc', 'dl',
+            'da', 'arc', 'tl',
+            'ta', 'dm']
     symbs = ['z', 'a', 'D_c', 'D_L',
              'D_A', 'Arcsec', 'T_lb',
              'T_a', 'DM']
@@ -119,7 +133,8 @@ def output(results):
              'Age of the Universe', 'Distance Modulus']
 
     rets = []
-    for vv, ss, tt, nn in zip(vals, symbs, types, names):
+    for kk, ss, tt, nn in zip(keys, symbs, types, names):
+        vv = results[kk]
         try:
             vv = vv.item()
         except AttributeError:
@@ -231,8 +246,10 @@ def main():
 
     # Calculate
     # ----------------
-    # Calculate basic cosmological parameters
-    results = calc(cosmo, args)
+    # Calculate basic cosmological values
+    results = calc_basic(cosmo, args)
+    # Calculate additional derived values
+    results = calc_derived(results)
     # Format and print output
     output(results)
 

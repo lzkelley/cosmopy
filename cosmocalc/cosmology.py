@@ -43,7 +43,7 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
         self._grid_dcom = self.comoving_distance(zgrid).cgs.value
         self._sort_dcom = np.argsort(self._grid_dcom)
         #    Comoving distances in centimeters
-        self._grid_dlum = self.comoving_distance(zgrid).cgs.value
+        self._grid_dlum = self.luminosity_distance(zgrid).cgs.value
         self._sort_dlum = np.argsort(self._grid_dlum)
         return
 
