@@ -35,10 +35,12 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
         zgrid = self._init_interp_grid(self._Z_GRID, self._INTERP_POINTS)
         self._grid_z = zgrid
         self._sort_z = np.argsort(zgrid)
+        self._grid_a = self._z_to_a(zgrid)
         # Calculate corresponding values in desired parameters
         #    Ages in seconds
         self._grid_age = self.age(zgrid).cgs.value
         self._sort_age = np.argsort(self._grid_age)
+        self._grid_lbk = self.hubble_time.cgs.value - self._grid_age
         #    Comoving distances in centimeters
         self._grid_dcom = self.comoving_distance(zgrid).cgs.value
         self._sort_dcom = np.argsort(self._grid_dcom)
@@ -123,3 +125,27 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
         """
         zz = self._interp(dl, self._grid_dlum, self._grid_z, self._sort_dlum)
         return zz
+
+    def get_grid(self):
+        """Return an array of the grid of interpolation points.
+        """
+        _var_keys = [
+            "_grid_z", "_grid_a", "_grid_dcom", "_grid_dlum", "_grid_lbk", "_grid_age"]
+        _var_names = ["z", "a", "dc", "dl", "tl", "ta"]
+        _var_types = [None, None, ['cm', 'Mpc'], ['cm', 'Mpc'], ['s', 'Gyr'], ['s', 'Gyr']]
+
+        ngrid = self._grid_z.size
+        npars = len(_var_keys)
+        grid = np.zeros((ngrid, npars))
+        names = []
+        for ii, (vk, un) in enumerate(zip(_var_keys, _var_types)):
+            vals = getattr(self, vk)
+            nam = _var_names[ii]
+            # Convert units if desired
+            if un is not None:
+                vals = ap.units.Quantity(vals, unit=un[0]).to(un[1]).value
+                nam += '[' + un[1] + ']'
+            grid[:, ii] = vals
+            names.append(nam)
+
+        return grid, names
