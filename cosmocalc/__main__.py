@@ -13,6 +13,9 @@ _RESULTS_FUNCS = ['luminosity_distance', 'comoving_distance', 'lookback_time', '
 _RESULTS_FUNC_PARS = ['dl', 'dc', 'tl', 'ta']
 _RESULTS_PARS = ['z', 'a'] + _RESULTS_FUNC_PARS
 
+# Enable imperial units (e.g. 'miles')
+ap.units.imperial.enable()
+
 
 def calc_basic(cosmo, args):
     """Given a `Cosmology` instance and input arguments, calculate basic cosmological values.
