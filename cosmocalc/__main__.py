@@ -1,7 +1,6 @@
 """
 """
-# from collections import namedtuple
-from argparse import ArgumentParser
+import argparse
 
 import numpy as np
 import astropy as ap
@@ -109,7 +108,7 @@ def calc_derived(results):
     return results
 
 
-def output(results):
+def output(results, print_output=True):
     """Format and print the given cosmological parameters to stdout.
 
     Arguments
@@ -132,7 +131,8 @@ def output(results):
              'Angular Diameter Distance', 'Arcsecond Scale', 'Lookback Time',
              'Age of the Universe', 'Distance Modulus']
 
-    rets = []
+    outs = []
+    retvals = {}
     for kk, ss, tt, nn in zip(keys, symbs, types, names):
         vv = results[kk]
         try:
@@ -154,10 +154,13 @@ def output(results):
             conv = ""
 
         rstr = "{base:30s}{conv:20s} : {name}".format(base=base, conv=conv, name=nn)
-        rets.append(rstr)
+        retvals[kk] = rstr
+        outs.append(rstr)
 
-    print("\n" + "\n".join(rets) + "\n")
-    return
+    if print_output:
+        print("\n" + "\n".join(outs) + "\n")
+
+    return retvals
 
 
 def parse_input(inval, unit=None):
@@ -199,7 +202,7 @@ def parse_args():
     """Initialize desired command line options, retrieve their values.
     """
 
-    parser = ArgumentParser(description="CosmoCalc: cosmological calculator.")
+    parser = argparse.ArgumentParser(description="CosmoCalc: cosmological calculator.")
 
     # Target Parameters
     parser.add_argument('-z', type=float, default=None,
@@ -229,6 +232,40 @@ def parse_args():
     return args
 
 
+def api(key, val, cosmo=None):
+    """Primary method for external API access to this package.
+    """
+    args = {kk: None for kk in _RESULTS_PARS}
+    if key not in args:
+        print("Valid keys: '{}'".format(_RESULTS_PARS))
+        raise ValueError("Unrecognized key '{}'".format(key))
+
+    # Set the given value
+    args[key] = val
+    # Convert to `Namespace` object (expected by the `calc_basic` method)
+    args = argparse.Namespace(**args)
+
+    # Load cosmology object if needed
+    if cosmo is None:
+        cosmo = get_cosmology()
+
+    # Calculate
+    # ----------------
+    # Calculate basic cosmological values
+    results = calc_basic(cosmo, args)
+    # Calculate additional derived values
+    results = calc_derived(results)
+    # Format output string and return as dictionary
+    retvals = output(results, print_output=False)
+
+    return retvals
+
+
+def get_cosmology():
+    cosmo = Cosmology()
+    return cosmo
+
+
 def main():
     """Primary computational method for command-line access to calculations.
 
@@ -242,7 +279,7 @@ def main():
     # Load arguments
     args = parse_args()
     # Load cosmology object
-    cosmo = Cosmology(args)
+    cosmo = get_cosmology()
 
     # Calculate
     # ----------------

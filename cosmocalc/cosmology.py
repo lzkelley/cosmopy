@@ -25,7 +25,7 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
     _Z_GRID = [1000.0, 10.0, 4.0, 2.0, 1.0, 0.5, 0.1, 0.01]
     _INTERP_POINTS = 20
 
-    def __init__(self, args):
+    def __init__(self):
         # Initialize parent class
         super().__init__(H0=self.H0, Om0=self.Omega0, Ob0=self.OmegaBaryon)
 
