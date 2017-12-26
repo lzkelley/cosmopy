@@ -37,11 +37,11 @@ def calc_basic(cosmo, args):
 
     # Redshift
     if args.z is not None:
-        redz = args.z
+        redz = parse_input(args.z)
 
     # Scalefactor
     elif args.a is not None:
-        scale = args.a
+        scale = parse_input(args.a)
         redz = cosmo._a_to_z(scale)
 
     # Age of the Universe
@@ -108,7 +108,7 @@ def calc_derived(results):
     return results
 
 
-def output(results, print_output=True):
+def output_print(results, print_output=True):
     """Format and print the given cosmological parameters to stdout.
 
     Arguments
@@ -159,6 +159,48 @@ def output(results, print_output=True):
 
     if print_output:
         print("\n" + "\n".join(outs) + "\n")
+
+    return retvals
+
+
+def output_api(results):
+    """
+    Arguments
+    ---------
+    results : `Results` namedtuple
+        Cosmological parameters to output.
+
+    """
+
+    keys = ['z', 'a', 'dc', 'dl',
+            'da', 'arc', 'tl',
+            'ta', 'dm']
+    symbs = ['z', 'a', 'D_c', 'D_L',
+             'D_A', 'Arcsec', 'T_lb',
+             'T_a', 'DM']
+    types = [None, None, 'Mpc', 'Mpc',
+             'Mpc', 'pc', 'Gyr',
+             'Gyr', None]
+    names = ['Redshift', 'Scale-factor', 'Comoving Distance', 'Luminosity Distance',
+             'Angular Diameter Distance', 'Arcsecond Scale', 'Lookback Time',
+             'Age of the Universe', 'Distance Modulus']
+
+    retvals = {}
+    for kk, ss, tt, nn in zip(keys, symbs, types, names):
+        vv = results[kk]
+        try:
+            vv = vv.item()
+        except AttributeError:
+            pass
+        v_std = vv if tt is None else vv.to(tt)
+        try:
+            base = "{:.4f}".format(v_std)
+        except Exception:
+            print("Failed constructing `base` string on '{}' ({})".format(nn, ss))
+            print("  Value = '{}', type = '{}'".format(v_std, type(v_std)))
+            raise
+
+        retvals[kk] = base
 
     return retvals
 
@@ -256,7 +298,7 @@ def api(key, val, cosmo=None):
     # Calculate additional derived values
     results = calc_derived(results)
     # Format output string and return as dictionary
-    retvals = output(results, print_output=False)
+    retvals = output_api(results)
 
     return retvals
 
@@ -288,7 +330,7 @@ def main():
     # Calculate additional derived values
     results = calc_derived(results)
     # Format and print output
-    output(results)
+    output_print(results)
 
     return
 
