@@ -138,14 +138,18 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
         npars = len(_var_keys)
         grid = np.zeros((ngrid, npars))
         names = []
+        units = []
         for ii, (vk, un) in enumerate(zip(_var_keys, _var_types)):
             vals = getattr(self, vk)
             nam = _var_names[ii]
             # Convert units if desired
             if un is not None:
                 vals = ap.units.Quantity(vals, unit=un[0]).to(un[1]).value
-                nam += '[' + un[1] + ']'
+                # nam += '[' + un[1] + ']'
+                units.append(un[1])
+            else:
+                units.append('-')
             grid[:, ii] = vals
             names.append(nam)
 
-        return grid, names
+        return grid, names, units
