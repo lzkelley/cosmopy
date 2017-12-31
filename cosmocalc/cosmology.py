@@ -40,7 +40,8 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
         #    Ages in seconds
         self._grid_age = self.age(zgrid).cgs.value
         self._sort_age = np.argsort(self._grid_age)
-        self._grid_lbk = self.hubble_time.cgs.value - self._grid_age
+        # self._grid_lbk = self.hubble_time.cgs.value - self._grid_age
+        self._grid_lbk = self.lookback_time(zgrid)
         #    Comoving distances in centimeters
         self._grid_dcom = self.comoving_distance(zgrid).cgs.value
         self._sort_dcom = np.argsort(self._grid_dcom)
