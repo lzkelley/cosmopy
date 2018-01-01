@@ -4,12 +4,19 @@ CosmoCalc
 Master:
 
 .. image:: https://travis-ci.org/lzkelley/cosmocalc.svg?branch=master
-    :target: https://travis-ci.org/lzkelley/cosmocalc
+    :target: https://travis-ci.org/lzkelley/cosmocalc?branch=master
+
+.. image:: https://coveralls.io/repos/github/lzkelley/cosmocalc/badge.svg?branch=master
+    :target: https://coveralls.io/github/lzkelley/cosmocalc?branch=master
 
 Dev:
 
 .. image:: https://travis-ci.org/lzkelley/cosmocalc.svg?branch=dev
-    :target: https://travis-ci.org/lzkelley/cosmocalc
+    :target: https://travis-ci.org/lzkelley/cosmocalc?branch=dev
+    
+.. image:: https://coveralls.io/repos/github/lzkelley/cosmocalc/badge.svg
+    :target: https://coveralls.io/github/lzkelley/cosmocalc?branch=dev
+    
     
 Program to rapidly calculate cosmological parameters over history.
 
