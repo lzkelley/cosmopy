@@ -12,7 +12,7 @@ import numpy as np
 from numpy.testing import run_module_suite
 # import scipy as sp
 # import scipy.stats
-from nose.tools import assert_true, assert_false, assert_almost_equal, assert_raises
+from nose.tools import assert_almost_equal  # , assert_true, assert_false, assert_raises
 
 
 class TestMain(object):
