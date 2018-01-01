@@ -1,8 +1,8 @@
-"""Test methods for `cosmocalc.__main__.py`.
+"""Test methods for `cosmopy.__main__.py`.
 
 Can be run with:
-    $ nosetests cosmocalc/tests/test_main.py
-    $ nosetests cosmocalc/tests/test_main.py:TestMain.test_parse_input
+    $ nosetests cosmopy/tests/test_main.py
+    $ nosetests cosmopy/tests/test_main.py:TestMain.test_parse_input
 
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
@@ -22,7 +22,7 @@ class TestMain(object):
         np.random.seed(9865)
 
     def test__parse_input__unitless(self):
-        from cosmocalc.__main__ import parse_input
+        from cosmopy.__main__ import parse_input
 
         ins = ['-12', '+36', '2.2', '2.3e23', '-1.98e-1', 2.3]
         outs = [-12, 36, 2.2, 2.3e23, -1.98e-1, 2.3]
@@ -36,7 +36,7 @@ class TestMain(object):
         return
 
     def test__parse_input__defunit(self):
-        from cosmocalc.__main__ import parse_input
+        from cosmopy.__main__ import parse_input
         from astropy.units import Unit
 
         ins = ['2.3e12', '7.4e2']
@@ -52,7 +52,7 @@ class TestMain(object):
         return
 
     def test__parse_input__units(self):
-        from cosmocalc.__main__ import parse_input
+        from cosmopy.__main__ import parse_input
 
         ins = ['-35 kg', '7.4e2 s', '2.2 cm', '2.3e23 yr', '-1.98e-1 pc']
         outs = [-35e3, 7.4e2, 2.2, 7.258248e+30, -6.10964161e+17]

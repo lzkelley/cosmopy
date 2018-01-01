@@ -5,19 +5,19 @@ readme = open('README.rst').read()
 requirements = []
 
 setup(
-    name="cosmocalc",
+    name="cosmopy",
     version=3.1,
     author="Luke Zoltan Kelley",
     author_email="lkelley@cfa.harvard.edu",
     description=("General, commonly used functions for other projects."),
     license="MIT",
-    url="https://github.com/lzkelley/cosmocalc",
-    download_url="https://github.com/lzkelley/cosmocalc/archive/v3.1.tar.gz",
-    packages=['cosmocalc'],
+    url="https://github.com/lzkelley/cosmopy",
+    download_url="https://github.com/lzkelley/cosmopy/archive/v3.1.tar.gz",
+    packages=['cosmopy'],
     include_package_data=True,
     entry_points={
         'console_scripts': [
-            'cosmo = cosmocalc.__main__:main'
+            'cosmo = cosmopy.__main__:main'
         ]
     },
     install_requires=requirements,

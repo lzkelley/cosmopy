@@ -247,7 +247,7 @@ def parse_args():
     """Initialize desired command line options, retrieve their values.
     """
 
-    parser = argparse.ArgumentParser(description="CosmoCalc: cosmological calculator.")
+    parser = argparse.ArgumentParser(description="cosmopy: cosmological calculator.")
 
     # Target Parameters
     parser.add_argument('-z', type=float, default=None,

@@ -1,21 +1,21 @@
-CosmoCalc
+cosmopy
 =========
 
 Master:
 
-.. image:: https://travis-ci.org/lzkelley/cosmocalc.svg?branch=master
-    :target: https://travis-ci.org/lzkelley/cosmocalc?branch=master
+.. image:: https://travis-ci.org/lzkelley/cosmopy.svg?branch=master
+    :target: https://travis-ci.org/lzkelley/cosmopy?branch=master
 
-.. image:: https://coveralls.io/repos/github/lzkelley/cosmocalc/badge.svg?branch=master
-    :target: https://coveralls.io/github/lzkelley/cosmocalc?branch=master
+.. image:: https://coveralls.io/repos/github/lzkelley/cosmopy/badge.svg?branch=master
+    :target: https://coveralls.io/github/lzkelley/cosmopy?branch=master
 
 Dev:
 
-.. image:: https://travis-ci.org/lzkelley/cosmocalc.svg?branch=dev
-    :target: https://travis-ci.org/lzkelley/cosmocalc?branch=dev
+.. image:: https://travis-ci.org/lzkelley/cosmopy.svg?branch=dev
+    :target: https://travis-ci.org/lzkelley/cosmopy?branch=dev
     
-.. image:: https://coveralls.io/repos/github/lzkelley/cosmocalc/badge.svg
-    :target: https://coveralls.io/github/lzkelley/cosmocalc?branch=dev
+.. image:: https://coveralls.io/repos/github/lzkelley/cosmopy/badge.svg
+    :target: https://coveralls.io/github/lzkelley/cosmopy?branch=dev
     
     
 Program to rapidly calculate cosmological parameters over history.

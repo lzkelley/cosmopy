@@ -15,6 +15,7 @@ Current
 
 v3.1 - 2017-12-31
 -----------------
+    -   Renamed everything from `cosmocalc` to `cosmopy` (former already taken on pypi).
     -   Added travis and coveralls integration and badge-icons.
     -   Command-line input is parsed using astropy to identify input units.
     -   API functions added to retrieve cosmological parameters via python method calls.
@@ -27,7 +28,7 @@ v3.0 - 2017-12-24
     - The basic functionality is working in which an input redshift, scale-factor, distance (lum or com), of time (age or lookback) can be input, and all of the other parameters will be calculated and printed.
 
 
-    - cosmocalc/
+    - cosmopy/
         - __main__.py
             - This provides the entire API for command-line accessible functions (at the moment).
             - `parse_input()` [NEW-FUNCTION]
