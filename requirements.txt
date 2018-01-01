@@ -1,3 +1,6 @@
 numpy
 scipy
 astropy
+nose
+coverage
+python-coveralls
