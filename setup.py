@@ -11,8 +11,8 @@ setup(
     author_email="lkelley@cfa.harvard.edu",
     description=("General, commonly used functions for other projects."),
     license="MIT",
-    keywords="",
     url="https://github.com/lzkelley/cosmocalc",
+    download_url="https://github.com/lzkelley/cosmocalc/archive/v3.1.tar.gz",
     packages=['cosmocalc'],
     include_package_data=True,
     entry_points={
@@ -22,10 +22,24 @@ setup(
     },
     install_requires=requirements,
     long_description=readme,
-    classifiers=[
-        'Intended Audience :: Developers',
-        'License :: OSI Approved :: BSD License',
-        'Natural Language :: English',
-        'Programming Language :: Python :: 3.5',
-    ],
+    keywords=['utilities', 'physics', 'astronomy', 'cosmology',
+              'astrophysics', 'calculator'],
+    CLASSIFIERS=[
+        "Development Status :: 4 - Beta",
+        "Intended Audience :: Science/Research",
+        "Natural Language :: English",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 2",
+        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: Implementation :: PyPy",
+        "Topic :: Education",
+        "Topic :: Scientific/Engineering",
+        "Topic :: Scientific/Engineering :: Astronomy",
+        "Topic :: Scientific/Engineering :: Physics",
+        "Topic :: Utilities"
+    ]
 )

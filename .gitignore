@@ -1,3 +1,5 @@
 .cc-table.dat
 .cache/
 .coverage
+build/
+dist/
