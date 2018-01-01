@@ -6,7 +6,7 @@ requirements = []
 
 setup(
     name="cosmocalc",
-    version=3.0,
+    version=3.1,
     author="Luke Zoltan Kelley",
     author_email="lkelley@cfa.harvard.edu",
     description=("General, commonly used functions for other projects."),

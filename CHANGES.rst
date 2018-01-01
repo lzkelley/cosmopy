@@ -5,13 +5,21 @@ CHANGES
 To-Do
 -----
     - CMB Temperature
-    - Allow lists of target values (instead of single) --- this can be done via API (i.e. import) but not from the command line yet.
-    - Load requirements and version file in `setup.py`.
+    - Allow lists of target values (instead of single).
+    - Load version file in `setup.py`.
     
 
 Current
 -------
 
+
+v3.1 - 2017-12-31
+-----------------
+    -   Added travis and coveralls integration and badge-icons.
+    -   Command-line input is parsed using astropy to identify input units.
+    -   API functions added to retrieve cosmological parameters via python method calls.
+        -   Can also retrieve underlying `Cosmology` instances directly.
+    
 
 v3.0 - 2017-12-24
 -----------------
