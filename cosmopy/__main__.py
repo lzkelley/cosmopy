@@ -275,7 +275,10 @@ def parse_args():
         sys.exit(1)
 
     arg_given = False
-    for kk, vv in vars(args).items():
+    arg_vars = vars(args)
+    arg_vars.pop('version')
+    # print(arg_vars)
+    for kk, vv in arg_vars.items():
         if vv is not None:
             arg_given = True
 

@@ -3,3 +3,4 @@ scipy
 astropy
 nose
 coverage
+future
