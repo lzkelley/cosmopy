@@ -1,31 +1,52 @@
 cosmopy
 =========
 
-Master:
-
 .. image:: https://travis-ci.org/lzkelley/cosmopy.svg?branch=master
     :target: https://travis-ci.org/lzkelley/cosmopy?branch=master
-
+    
 .. image:: https://coveralls.io/repos/github/lzkelley/cosmopy/badge.svg?branch=master
     :target: https://coveralls.io/github/lzkelley/cosmopy?branch=master
-
-Dev:
-
-.. image:: https://travis-ci.org/lzkelley/cosmopy.svg?branch=dev
-    :target: https://travis-ci.org/lzkelley/cosmopy?branch=dev
     
-.. image:: https://coveralls.io/repos/github/lzkelley/cosmopy/badge.svg
-    :target: https://coveralls.io/github/lzkelley/cosmopy?branch=dev
-    
-    
-Program to rapidly calculate cosmological parameters over history.
+Quickly calculate cosmological parameters.  
 
-The user provides an input parameter (e.g. redshift) and recieves the entire set of cosmological parameters corresponding to the epoch thus specified.
+- Provides both command-line and API interfaces.  
 
-Possible Input:
-    - Redshift              '-z '
-    - Scale-factor          '-a '
-    - Luminosity distance   '-dl'
-    - Comoving   distance   '-dc'
-    - Look-back    time     '-tl'
-    - Universe age time     '-ta'
+- Uses the machinery from the `astropy.cosmology` package.
+
+The user provides an input parameter (e.g. redshift or luminosity-distance) and recieves the entire set of cosmological measures corresponding to the epoch thus specified.
+
+Installation
+------------
+
+Using `pip`:
+
+::
+    
+    pip install cosmopy
+    
+From source:
+
+::
+
+ git clone git@github.com:lzkelley/cosmopy.git
+  pip install cosmopy
+
+
+Usage
+-----
+
+::
+    
+    usage: cosmo [-h] [-z Z] [-a A] [-dc DC] [-dl DL] [-tl TL] [-ta TA] [-v]
+
+    cosmopy: cosmological calculator.
+
+    optional arguments:
+      -h, --help      show this help message and exit
+      -z Z            target redshift z
+      -a A            target scale factor a
+      -dc DC, -cd DC  target coming distance D_C
+      -dl DL, -ld DL  target luminosity distance D_L
+      -tl TL, -lt TL  target look-back time T_L
+      -ta TA, -at TA  target universe age T_A
+      -v, --version   print version information.
