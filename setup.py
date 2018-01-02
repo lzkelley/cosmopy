@@ -1,12 +1,16 @@
 from setuptools import setup
 
-readme = open('README.rst').read()
+FNAME_README = "README.rst"
+FNAME_REQUIREMENTS = "requirements.txt"
+FNAME_VERSION = "VERSION.txt"
 
-requirements = []
+readme = open(FNAME_README).read()
+requirements = open(FNAME_REQUIREMENTS).read().split()
+version = open(FNAME_VERSION).read().strip()
 
 setup(
     name="cosmopy",
-    version=3.1,
+    version=version,
     author="Luke Zoltan Kelley",
     author_email="lkelley@cfa.harvard.edu",
     description=("General, commonly used functions for other projects."),

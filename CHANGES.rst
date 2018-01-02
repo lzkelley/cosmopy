@@ -7,6 +7,11 @@ To-Do
     - CMB Temperature
     - Allow lists of target values (instead of single).
     - Load version file in `setup.py`.
+    - Online documentation.
+    - Package information in (e.g.) `__version__`.
+    - Man-page entry
+    - Better error message when no arguments given.
+    - Fix depencies not being installed when downloading from pypi
     
 
 Current
