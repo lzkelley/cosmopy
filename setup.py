@@ -2,21 +2,20 @@ from setuptools import setup
 
 FNAME_README = "README.rst"
 FNAME_REQUIREMENTS = "requirements.txt"
-FNAME_VERSION = "VERSION.txt"
+VERSION = "3.1.2"
 
 readme = open(FNAME_README).read()
 requirements = open(FNAME_REQUIREMENTS).read().split()
-version = open(FNAME_VERSION).read().strip()
 
 setup(
     name="cosmopy",
-    version=version,
+    version=VERSION,
     author="Luke Zoltan Kelley",
     author_email="lkelley@cfa.harvard.edu",
     description=("General, commonly used functions for other projects."),
     license="MIT",
     url="https://github.com/lzkelley/cosmopy",
-    download_url="https://github.com/lzkelley/cosmopy/archive/v{}.tar.gz".format(version),
+    download_url="https://github.com/lzkelley/cosmopy/archive/v{}.tar.gz".format(VERSION),
     packages=['cosmopy'],
     include_package_data=True,
     entry_points={
