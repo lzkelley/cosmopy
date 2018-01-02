@@ -13,6 +13,14 @@ Current
 -------
 
 
+v3.1.2 - 2018-01-01
+-------------------
+    -   Fix issue with version file.  Use hardcoded version strings in both `setup.py` and `__init__.py` for now.
+    -   Fix python2-python3 incompatibility issue regarding use of `super`.
+        -   Added `future` package to requirements to deal with this.
+    -   Improve the README usage documentation.
+
+
 v3.1.1 - 2018-01-01
 -------------------
     -   Fix install issues from missing 'requirements' file (wasn't being loaded properly in 'setup.py').
