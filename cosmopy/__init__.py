@@ -7,7 +7,8 @@ import astropy.constants  # noqa
 import astropy.units  # noqa
 
 _here = os.path.abspath(os.path.dirname(__file__))
-__version__ = os.path.join(_here, os.path.pardir, "VERSION.txt")
+_fname_version = os.path.join(_here, os.path.pardir, "VERSION.txt")
+__version__ = open(_fname_version).read().strip()
 __author__ = "Luke Zoltan Kelley <lkelley@cfa.harvard.edu>"
 __license__ = "MIT"
 

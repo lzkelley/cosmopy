@@ -1,6 +1,7 @@
 """
 """
 import argparse
+import sys
 
 import numpy as np
 import astropy as ap
@@ -251,28 +252,38 @@ def parse_args():
 
     # Target Parameters
     parser.add_argument('-z', type=float, default=None,
-                        help='Target redshift z')
+                        help='target redshift z')
     parser.add_argument('-a', type=float, default=None,
-                        help='Target scale factor a')
+                        help='target scale factor a')
     parser.add_argument('-dc', '-cd', default=None,
-                        help='Target coming distance D_C')
+                        help='target coming distance D_C')
     parser.add_argument('-dl', '-ld', default=None,
-                        help='Target luminosity distance D_L')
+                        help='target luminosity distance D_L')
     parser.add_argument('-tl', '-lt', default=None,
-                        help='Target look-back time T_L')
+                        help='target look-back time T_L')
     parser.add_argument('-ta', '-at', default=None,
-                        help='Target universe age T_A')
+                        help='target universe age T_A')
 
-    '''
-    # Modify Cosmological Parameters
-    parser.add_argument('--H0', '--h0', type=float, metavar='', default=Parameters.H0, help='Hubble Constant (H0) [km/s/Mpc]')
-    parser.add_argument('--T0', '--t0', type=float, metavar='', default=Parameters.T0, help='Hubble Time (T0) [1/s]')
-    parser.add_argument('--ODM', '--darkmatter', type=float, metavar='OmegaDM', default=Parameters.OmegaDM, help='Dark Matter fraction (OmegaDM) [1/critical-density]')
-    parser.add_argument('--OB', '--baryon', type=float, metavar='OmegaB', default=Parameters.OmegaB, help='Baryon      fraction (OmegaB)  [1/critical-density]')
-    parser.add_argument('--OL', '--darkenergy', type=float, metavar='OmegaL', default=Parameters.OmegaL, help='Dark Energy fraction (OmegaL)  [1/critical-density]')
-    parser.add_argument('--OR', '--radiation', type=float, metavar='OmegaR', default=Parameters.OmegaR, help='Radtion     fraction (OmegaR)  [1/critical-density]')
-    '''
+    parser.add_argument('-v', '--version', action="store_true", default=False,
+                        help='print version information.')
+
     args = parser.parse_args()
+
+    if args.version:
+        from . import __version__
+        print(__version__)
+        sys.exit(1)
+
+    arg_given = False
+    for kk, vv in vars(args).items():
+        if vv is not None:
+            arg_given = True
+
+    if not arg_given:
+        print("No argument given.  Must provide an input argument.\n")
+        parser.print_help()
+        print("")
+        sys.exit(1)
 
     return args
 
