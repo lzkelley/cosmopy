@@ -4,9 +4,10 @@ CHANGES
 
 To-Do
 -----
-    - CMB Temperature
-    - Allow lists of target values (instead of single).
-    - Online documentation.
+    -   Improve tests to better capture install process (requirements, etc).
+    -   CMB Temperature
+    -   Allow lists of target values (instead of single).
+    -   Online documentation.
     
 
 Current
