@@ -6,16 +6,18 @@ To-Do
 -----
     - CMB Temperature
     - Allow lists of target values (instead of single).
-    - Load version file in `setup.py`.
     - Online documentation.
-    - Package information in (e.g.) `__version__`.
-    - Man-page entry
-    - Better error message when no arguments given.
-    - Fix depencies not being installed when downloading from pypi
     
 
 Current
 -------
+
+
+v3.1.1 - 2018-01-01
+-------------------
+    -   Fix install issues from missing 'requirements' file (wasn't being loaded properly in 'setup.py').
+    -   When no arguments are given, explain that arguments are required and print help message.
+    -   Added version (and other metadata) info to '__init__.py'.
 
 
 v3.1 - 2017-12-31
