@@ -16,7 +16,7 @@ setup(
     description=("General, commonly used functions for other projects."),
     license="MIT",
     url="https://github.com/lzkelley/cosmopy",
-    download_url="https://github.com/lzkelley/cosmopy/archive/v3.1.tar.gz",
+    download_url="https://github.com/lzkelley/cosmopy/archive/v{}.tar.gz".format(version),
     packages=['cosmopy'],
     include_package_data=True,
     entry_points={
