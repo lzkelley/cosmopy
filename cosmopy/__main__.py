@@ -326,7 +326,7 @@ def api(key, val, cosmo=None):
     sets = {kk: None for kk in _RESULTS_PARS}
     if key not in sets:
         print("Valid keys: '{}'".format(_RESULTS_PARS))
-        raise ValueError("Unrecognized key '{}'".format(key))
+        raise KeyError("Unrecognized key '{}'".format(key))
 
     # Set the given value
     sets[key] = val
@@ -377,7 +377,7 @@ def main(args=None):
     results = calc_basic(cosmo, sets)
     # Calculate additional derived values
     results = calc_derived(results)
-    # Format and print output
+    # Format and print outputs
     output_print(results)
 
     return
