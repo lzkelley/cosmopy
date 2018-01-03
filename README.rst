@@ -17,6 +17,9 @@ The user provides an input parameter (e.g. redshift or luminosity-distance) and 
 
 ![Terminal Demo](https://raw.githubusercontent.com/lzkelley/cosmopy/dev/docs/cosmopy_demo.gif)
 
+.. image:: https://raw.githubusercontent.com/lzkelley/cosmopy/dev/docs/cosmopy_demo.gif
+   :height: 100px
+   
 
 Installation
 ------------
