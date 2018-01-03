@@ -1,4 +1,4 @@
-"""
+"""Interface to the cosmopy package via either command-line or python API.
 """
 import argparse
 import sys
@@ -104,6 +104,24 @@ def calc_basic(cosmo, sets):
 
 
 def calc_derived(results):
+    """Calculate derived cosmological parameters based on the standard ones.
+
+    Adds:
+        - 'da': the Angular diameter distance
+        - 'arc': the physical size corresponding to one arcsecond
+        - 'dm': the distance modulus
+
+    Arguments
+    ---------
+    results : dict
+        Dictionary of standard cosmological parameters (e.g. dl, z, tl, etc)
+
+    Returns
+    -------
+    results : dict
+        Dictionary of parameters with derived quantities added.
+
+    """
     dang = results['dc']/(1.0 + results['z'])
     darc = dang*ARCSEC
     dist_mod = 5.0*np.log10(results['dl'].cgs.value/(10.0*PC))
@@ -196,11 +214,17 @@ def output_print(results, print_output=True):
 
 
 def output_api(results):
-    """
+    """Convert cosmological parameters from numeric values to formatted-strings.
+
     Arguments
     ---------
-    results : `Results` namedtuple
-        Cosmological parameters to output.
+    results : `dict`
+        Cosmological parameters in numerical form.
+
+    Returns
+    -------
+    retvals : `dict`
+        Cosmological parameters as nicely formatted strings.
 
     """
 
@@ -322,6 +346,20 @@ def parse_args(args):
 
 def api(key, val, cosmo=None):
     """Primary method for external API access to this package.
+
+    Arguments
+    ---------
+    key : str
+        Specification of target cosmological parameter.  Must be one of `_RESULTS_PARS`.
+    val : str or scalar
+        The value of the target cosmological parameter.
+        Can be a scalar value in CGS units, or a string including unit specification.
+
+    Returns
+    -------
+    retvals : dict
+        Dictionary of cosmological parameters as formatted strings.
+
     """
     sets = {kk: None for kk in _RESULTS_PARS}
     if key not in sets:
@@ -350,6 +388,8 @@ def api(key, val, cosmo=None):
 
 
 def get_cosmology():
+    """Construct an instance of the `Cosmology` class and return.
+    """
     cosmo = Cosmology()
     return cosmo
 
