@@ -30,7 +30,7 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
 
     """
     Omega0 = 0.2726
-    OmegaLambda = 0.7274
+    # OmegaLambda = 0.7274
     OmegaBaryon = 0.0456
     HubbleParam = 0.704
     H0 = HubbleParam * 100.0
@@ -63,6 +63,11 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
         self._grid_dlum = self.luminosity_distance(zgrid).cgs.value
         self._sort_dlum = np.argsort(self._grid_dlum)
         return
+
+    def __str__(self):
+        rstr = "cosmopy.cosmology.Cosmology :: H0 = {}, Om0 = {}, Ob0 = {}".format(
+            self.H0, self.Omega0, self.OmegaBaryon)
+        return rstr
 
     def _init_interp_grid(self, z_pnts, num_pnts):
         """Create a grid in redshift for interpolation.
