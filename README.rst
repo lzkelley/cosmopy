@@ -15,7 +15,8 @@ Quickly calculate cosmological parameters.
 
 The user provides an input parameter (e.g. redshift or luminosity-distance) and recieves the entire set of cosmological measures corresponding to the epoch thus specified.
 
-![Terminal Demo](https://raw.githubusercontent.com/lzkelley/cosmopy/dev/docs/cosmopy_demo.gif)
+
+The below gif shows three examples: inputting a redshift, a luminosity distance (`-dl 400Mpc`), and an age of the universe (`-ta 3.2Gyr`).
 
 .. image:: https://raw.githubusercontent.com/lzkelley/cosmopy/dev/docs/cosmopy_demo.gif
    :height: 100px
@@ -35,7 +36,7 @@ From source:
 ::
 
  git clone git@github.com:lzkelley/cosmopy.git
-  pip install cosmopy
+ pip install cosmopy
 
 
 Usage
