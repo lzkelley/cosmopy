@@ -6,7 +6,10 @@ cosmopy
     
 .. image:: https://coveralls.io/repos/github/lzkelley/cosmopy/badge.svg?branch=master
     :target: https://coveralls.io/github/lzkelley/cosmopy?branch=master
-    
+
+.. image:: https://codecov.io/gh/lzkelley/cosmopy/branch/master/graph/badge.svg
+    :target: https://codecov.io/gh/lzkelley/cosmopy
+          
 Quickly calculate cosmological parameters.  
 
 - Provides both command-line and API interfaces.  
