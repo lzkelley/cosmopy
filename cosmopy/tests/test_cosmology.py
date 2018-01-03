@@ -27,6 +27,20 @@ class TestCosmology(unittest.TestCase):
         print(cosmo)
         return
 
+    def test__init_interp_grid(self):
+        from cosmopy.cosmology import Cosmology
+
+        zpnts = [10.0, 1.0]
+        numz = 10
+
+        grid = Cosmology._init_interp_grid(zpnts, numz)
+        assert_equal(grid.size, numz * len(zpnts))
+
+        with assert_raises(ValueError) as cm:
+            Cosmology._init_interp_grid(zpnts[::-1], numz)
+
+        return
+
     def test_interp_grid(self):
         from cosmopy.cosmology import Cosmology
         cosmo = Cosmology()
