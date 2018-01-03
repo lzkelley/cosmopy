@@ -15,6 +15,9 @@ Quickly calculate cosmological parameters.
 
 The user provides an input parameter (e.g. redshift or luminosity-distance) and recieves the entire set of cosmological measures corresponding to the epoch thus specified.
 
+![Terminal Demo](https://raw.githubusercontent.com/lzkelley/cosmopy/dev/docs/cosmopy_demo.gif)
+
+
 Installation
 ------------
 
