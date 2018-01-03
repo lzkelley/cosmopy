@@ -137,6 +137,7 @@ def output_print(results, print_output=True):
              'Age of the Universe', 'Distance Modulus']
 
     retvals = {}
+    printvals = []
     for kk, ss, tt, nn in zip(keys, symbs, types, names):
         vv = results[kk]
         try:
@@ -157,14 +158,16 @@ def output_print(results, print_output=True):
         except Exception:
             conv = ""
 
-        retvals[kk] = {"base":base, "conv":conv, "name":nn}
+        rstr = "{base:30s}{conv:20s} : {name}".format(base=base, conv=conv, name=nn)
+        retvals[kk] = rstr
+        printvals.append({"base":base, "conv":conv, "name":nn})
 
     if print_output:
-        for key in retvals:
-            click.secho('{base:30s}'.format(base=retvals[key]['base']), bold=True, nl=False, fg="cyan")
-            click.secho('{conv:20s}'.format(conv=retvals[key]['conv']), bold=False, nl=False, fg="yellow")
+        for val in printvals:
+            click.secho('{base:30s}'.format(base=val['base']), bold=True, nl=False, fg="cyan")
+            click.secho('{conv:20s}'.format(conv=val['conv']), bold=False, nl=False, fg="yellow")
             click.secho(' : ', bold=True, nl=False, fg="green")
-            click.secho('{name}'.format(name=retvals[key]["name"]), bold=False, nl=True, fg="red")
+            click.secho('{name}'.format(name=val["name"]), bold=False, nl=True, fg="red")
 
     return retvals
 
