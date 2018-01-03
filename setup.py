@@ -2,7 +2,7 @@ from setuptools import setup
 
 FNAME_README = "README.rst"
 FNAME_REQUIREMENTS = "requirements.txt"
-VERSION = "3.1.2"
+VERSION = "3.1.3"
 
 readme = open(FNAME_README).read()
 requirements = open(FNAME_REQUIREMENTS).read().split()

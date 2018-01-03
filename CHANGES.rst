@@ -14,6 +14,13 @@ Current
 -------
 
 
+v3.1.3 - 2018-01-03
+-------------------
+    -   Added colored output using the 'click' package (added to dependencies).
+    -   Added significant unit-testing.  Coverage currently at 98%.
+    -   Added function documentation.
+    
+
 v3.1.2 - 2018-01-01
 -------------------
     -   Fix issue with version file.  Use hardcoded version strings in both `setup.py` and `__init__.py` for now.
