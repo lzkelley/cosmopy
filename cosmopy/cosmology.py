@@ -70,7 +70,8 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
             self.H0, self.Omega0, self.OmegaBaryon)
         return rstr
 
-    def _init_interp_grid(self, z_pnts, num_pnts):
+    @staticmethod
+    def _init_interp_grid(z_pnts, num_pnts):
         """Create a grid in redshift for interpolation.
 
         Arguments
