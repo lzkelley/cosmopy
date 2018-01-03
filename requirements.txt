@@ -1,6 +1,7 @@
-numpy
+Bnumpy
 scipy
 astropy
 nose
 coverage
 future
+click
