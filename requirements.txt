@@ -1,4 +1,4 @@
-Bnumpy
+numpy
 scipy
 astropy
 nose
