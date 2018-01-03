@@ -13,8 +13,20 @@ import astropy.cosmology  # noqa
 class Cosmology(ap.cosmology.FlatLambdaCDM):
     """Class for calculating (and inverting) cosmological distance measures.
 
-    Methods
-    -------
+    Based on the `Astropy.cosmology` methods and classes.
+
+    The base class provides methods to convert from redshift to desired cosmological parameters,
+    e.g. `luminosity_distance(z)`.  These methods are used to construct a numerical grid of values
+    as a function of redshift.  To calculate the redshift (and other cosmological parameters) when
+    given a derived quantitiy (i.e. to come from d_L to redshift), the numerical grid can then be
+    inverted and interpolated to find the corresponding redshift.
+
+    API Methods
+    -----------
+    -   tage_to_z                      -   Convert from universe-age to redshift.
+    -   dcom_to_z                      -   Convert from comoving-dist to redshift.
+    -   dlum_to_z                      -   Convert from luminosity-dist to redshift.
+    -   get_grid                       -   Retrieve the underlying interpolation grid.
 
     """
     Omega0 = 0.2726
@@ -130,7 +142,18 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
         return zz
 
     def get_grid(self):
-        """Return an array of the grid of interpolation points.
+        """Return an array of the grid of interpolation points for each cosmological parameter.
+
+        Returns
+        -------
+        grid : (N,M,) of scalar
+            Grid of `N` values for each of `M` cosmological parameters.
+            For example, the redshift values are `grid[:, 0]`.
+        names : (M,) str
+            The names of each cosmological parameter in the grid.
+        units : (M,) str
+            The units used for each cosmological parameter in the grid.
+
         """
         _var_keys = [
             "_grid_z", "_grid_a", "_grid_dcom", "_grid_dlum", "_grid_lbk", "_grid_age"]
