@@ -23,14 +23,14 @@ _COLOR_NAME = "red"
 ap.units.imperial.enable()
 
 
-def calc_basic(cosmo, args):
+def calc_basic(cosmo, sets):
     """Given a `Cosmology` instance and input arguments, calculate basic cosmological values.
 
     Parameters
     ----------
     cosmo : `Cosmology`
         Class for calculating cosmological parameters, based on `astropy.cosmology` classes.
-    args : `argparse.Namespace`
+    sets : `argparse.Namespace`
         Namespace containing input parameters.
         One of its parameters, {`a`, `z`, `dc`, `dl`, `tl`, `ta`} must be non-None.
 
@@ -45,31 +45,29 @@ def calc_basic(cosmo, args):
     results = {kk: None for kk in _RESULTS_PARS}
 
     # Redshift
-    if args.z is not None:
-        redz = parse_input(args.z)
+    if sets.z is not None:
+        redz = parse_input(sets.z)
 
     # Scalefactor
-    elif args.a is not None:
-        scale = parse_input(args.a)
+    elif sets.a is not None:
+        scale = parse_input(sets.a)
         redz = cosmo._a_to_z(scale)
 
     # Age of the Universe
-    elif args.ta is not None:
-        tage = parse_input(args.ta, U_SEC)
+    elif sets.ta is not None:
+        tage = parse_input(sets.ta, U_SEC)
         redz = cosmo.tage_to_z(tage.cgs.value)
         results['ta'] = tage
 
     # Loockback Time
-    elif args.tl is not None:
-        tlbk = parse_input(args.tl, U_SEC)
-        tage = cosmo.hubble_time - tlbk
-        redz = cosmo.tage_to_z(tage.cgs.value)
-        results['ta'] = tage
+    elif sets.tl is not None:
+        tlbk = parse_input(sets.tl, U_SEC)
+        redz = cosmo.tlbk_to_z(tlbk.cgs.value)
         results['tl'] = tlbk
 
     # Comoving Distance
-    elif args.dc is not None:
-        dcom = parse_input(args.dc, U_CM)
+    elif sets.dc is not None:
+        dcom = parse_input(sets.dc, U_CM)
         redz = cosmo.dcom_to_z(dcom.cgs.value)
         # Calculate luminosity-distance manually
         dlum = dcom * (1.0 + redz)
@@ -77,8 +75,8 @@ def calc_basic(cosmo, args):
         results['dl'] = dlum
 
     # Luminosity Distance
-    elif args.dl is not None:
-        dlum = parse_input(args.dl, U_CM)
+    elif sets.dl is not None:
+        dlum = parse_input(sets.dl, U_CM)
         redz = cosmo.dlum_to_z(dlum.cgs.value)
         # Calculate comoving-distance manually
         dcom = dlum / (1.0 + redz)
@@ -88,7 +86,7 @@ def calc_basic(cosmo, args):
     # No arguments set, raise error
     else:
         print("__main__.calc()")
-        print("\t`args` = '{}'".format(args))
+        print("\t`sets` = '{}'".format(sets))
         raise ValueError("No input given!")
 
     # Calculate scale-factor if needed
@@ -274,7 +272,7 @@ def parse_input(inval, unit=None):
     return val
 
 
-def parse_args():
+def parse_args(args):
     """Initialize desired command line options, retrieve their values.
     """
 
@@ -297,15 +295,16 @@ def parse_args():
     parser.add_argument('-v', '--version', action="store_true", default=False,
                         help='print version information.')
 
-    args = parser.parse_args()
+    # print("args = ", args)
+    sets = parser.parse_args(args)
 
-    if args.version:
+    if sets.version:
         from . import __version__
         print(__version__)
         sys.exit(1)
 
     arg_given = False
-    arg_vars = vars(args)
+    arg_vars = vars(sets)
     arg_vars.pop('version')
     # print(arg_vars)
     for kk, vv in arg_vars.items():
@@ -318,21 +317,21 @@ def parse_args():
         print("")
         sys.exit(1)
 
-    return args
+    return sets
 
 
 def api(key, val, cosmo=None):
     """Primary method for external API access to this package.
     """
-    args = {kk: None for kk in _RESULTS_PARS}
-    if key not in args:
+    sets = {kk: None for kk in _RESULTS_PARS}
+    if key not in sets:
         print("Valid keys: '{}'".format(_RESULTS_PARS))
         raise ValueError("Unrecognized key '{}'".format(key))
 
     # Set the given value
-    args[key] = val
+    sets[key] = val
     # Convert to `Namespace` object (expected by the `calc_basic` method)
-    args = argparse.Namespace(**args)
+    sets = argparse.Namespace(**sets)
 
     # Load cosmology object if needed
     if cosmo is None:
@@ -341,7 +340,7 @@ def api(key, val, cosmo=None):
     # Calculate
     # ----------------
     # Calculate basic cosmological values
-    results = calc_basic(cosmo, args)
+    results = calc_basic(cosmo, sets)
     # Calculate additional derived values
     results = calc_derived(results)
     # Format output string and return as dictionary
@@ -355,7 +354,7 @@ def get_cosmology():
     return cosmo
 
 
-def main():
+def main(args=None):
     """Primary computational method for command-line access to calculations.
 
     Loads command line arguments and a `Cosmology` instance.
@@ -366,14 +365,16 @@ def main():
     # Initialize
     # ----------------
     # Load arguments
-    args = parse_args()
+    if args is None:
+        args = sys.argv[1:]
+    sets = parse_args(args)
     # Load cosmology object
     cosmo = get_cosmology()
 
     # Calculate
     # ----------------
     # Calculate basic cosmological values
-    results = calc_basic(cosmo, args)
+    results = calc_basic(cosmo, sets)
     # Calculate additional derived values
     results = calc_derived(results)
     # Format and print output
