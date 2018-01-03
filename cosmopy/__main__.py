@@ -2,17 +2,22 @@
 """
 import argparse
 import sys
+import click
 
 import numpy as np
 import astropy as ap
 
 from . cosmology import Cosmology
-from . import PC, ARCSEC, U_SEC, U_CM
+from . import PC, ARCSEC, U_SEC, U_CM, COLORED_OUTPUT
 
 _RESULTS_FUNCS = ['luminosity_distance', 'comoving_distance', 'lookback_time', 'age']
 
 _RESULTS_FUNC_PARS = ['dl', 'dc', 'tl', 'ta']
 _RESULTS_PARS = ['z', 'a'] + _RESULTS_FUNC_PARS
+
+_COLOR_BASE = "magenta"  # "cyan"
+_COLOR_CONV = "green"  # "yellow"
+_COLOR_NAME = "red"
 
 # Enable imperial units (e.g. 'miles')
 ap.units.imperial.enable()
@@ -115,10 +120,19 @@ def calc_derived(results):
 def output_print(results, print_output=True):
     """Format and print the given cosmological parameters to stdout.
 
+    If the global `COLORED_OUTPUT` parameter is true, `click` is used to print colored output.
+
     Arguments
     ---------
     results : `Results` namedtuple
         Cosmological parameters to output.
+    print_output : bool
+        Print output to stdout in addition to returning dictionary of values
+
+    Returns
+    -------
+    retvals : dict
+        Dictionary of cosmological parameter outputs in formatted str form.
 
     """
 
@@ -135,8 +149,9 @@ def output_print(results, print_output=True):
              'Angular Diameter Distance', 'Arcsecond Scale', 'Lookback Time',
              'Age of the Universe', 'Distance Modulus']
 
-    outs = []
     retvals = {}
+    printvals = []
+    outs = []
     for kk, ss, tt, nn in zip(keys, symbs, types, names):
         vv = results[kk]
         try:
@@ -160,9 +175,24 @@ def output_print(results, print_output=True):
         rstr = "{base:30s}{conv:20s} : {name}".format(base=base, conv=conv, name=nn)
         retvals[kk] = rstr
         outs.append(rstr)
+        printvals.append({"base": base, "conv": conv, "name": nn})
 
     if print_output:
-        print("\n" + "\n".join(outs) + "\n")
+        print("")
+
+        if COLORED_OUTPUT:
+            for val in printvals:
+                click.secho('{base:30s}'.format(base=val['base']),
+                            bold=True, nl=False, fg=_COLOR_BASE)
+                click.secho('{conv:20s}'.format(conv=val['conv']),
+                            bold=False, nl=False, fg=_COLOR_CONV)
+                click.secho(' : ', bold=True, nl=False)  # , fg="green")
+                click.secho('{name}'.format(name=val["name"]),
+                            bold=False, nl=True, fg=_COLOR_NAME)
+        else:
+            print("\n".join(outs))
+
+        print("")
 
     return retvals
 

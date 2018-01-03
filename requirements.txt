@@ -4,3 +4,4 @@ astropy
 nose
 coverage
 future
+click
