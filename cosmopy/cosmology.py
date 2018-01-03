@@ -29,10 +29,11 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
     -   get_grid                       -   Retrieve the underlying interpolation grid.
 
     """
-    Omega0 = 0.2726
-    # OmegaLambda = 0.7274
-    OmegaBaryon = 0.0456
-    HubbleParam = 0.704
+
+    # These are WMAP9 parameters
+    Omega0 = 0.286
+    OmegaBaryon = 0.0463
+    HubbleParam = 0.693
     H0 = HubbleParam * 100.0
 
     # z=0.0 is added automatically
@@ -54,8 +55,8 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
         #    Ages in seconds
         self._grid_age = self.age(zgrid).cgs.value
         self._sort_age = np.argsort(self._grid_age)
-        # self._grid_lbk = self.hubble_time.cgs.value - self._grid_age
         self._grid_lbk = self.lookback_time(zgrid)
+        self._sort_lbk = np.argsort(self._grid_lbk)
         #    Comoving distances in centimeters
         self._grid_dcom = self.comoving_distance(zgrid).cgs.value
         self._sort_dcom = np.argsort(self._grid_dcom)
@@ -112,12 +113,20 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
     def _a_to_z(sf):
         """Convert from scale-factor to redshift.
         """
+        sf = np.asarray(sf)
+        if np.any((sf > 1.0) | (sf < 0.0)):
+            raise ValueError("Scale-factor must be [0.0, 1.0]")
+
         return (1.0/sf) - 1.0
 
     @staticmethod
     def _z_to_a(redz):
         """Convert from redshift to scale-factor.
         """
+        redz = np.asarray(redz)
+        if np.any(redz < 0.0):
+            raise ValueError("Redshift must be [0.0, +inf)")
+
         return 1.0/(redz + 1.0)
 
     @staticmethod
@@ -132,6 +141,12 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
         """Convert from age of the universe [seconds] to redshift.
         """
         zz = self._interp(age, self._grid_age, self._grid_z, self._sort_age)
+        return zz
+
+    def tlbk_to_z(self, lbk):
+        """Convert from lookback time [seconds] to redshift.
+        """
+        zz = self._interp(lbk, self._grid_lbk, self._grid_z, self._sort_lbk)
         return zz
 
     def dcom_to_z(self, dc):
