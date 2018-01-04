@@ -1,13 +1,10 @@
 cosmopy
 =========
 
-.. image:: https://travis-ci.org/lzkelley/cosmopy.svg?branch=master
+.. image:: https://img.shields.io/travis/lzkelley/cosmopy.svg
     :target: https://travis-ci.org/lzkelley/cosmopy?branch=master
     
-.. image:: https://coveralls.io/repos/github/lzkelley/cosmopy/badge.svg?branch=master
-    :target: https://coveralls.io/github/lzkelley/cosmopy?branch=master
-
-.. image:: https://codecov.io/gh/lzkelley/cosmopy/branch/master/graph/badge.svg
+.. image:: https://img.shields.io/codecov/c/github/lzkelley/cosmopy/master.svg
     :target: https://codecov.io/gh/lzkelley/cosmopy
           
 Quickly calculate cosmological parameters.  
