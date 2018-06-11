@@ -12,6 +12,9 @@ To-Do
 
 Current
 -------
+    -   Added redshift to comoving and luminosity distance methods.
+    -   Added differential volume calculation (dVc/dz)
+
 
 v3.2 - 2018-01-03
 -------------------

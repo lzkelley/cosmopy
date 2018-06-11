@@ -35,6 +35,7 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
     OmegaBaryon = 0.0463
     HubbleParam = 0.693
     H0 = HubbleParam * 100.0
+    SPLC = 29979245800.0
 
     # z=0.0 is added automatically
     _Z_GRID = [1000.0, 10.0, 4.0, 2.0, 1.0, 0.5, 0.1, 0.01]
@@ -162,6 +163,18 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
         zz = self._interp(dl, self._grid_dlum, self._grid_z, self._sort_dlum)
         return zz
 
+    def _z_to_dcom(self, zz):
+        """Convert from comoving-distance [cm] to redshift.
+        """
+        dc = self._interp(zz, self._grid_z, self._grid_dcom, self._sort_z)
+        return dc
+
+    def _z_to_dlum(self, zz):
+        """Convert from luminosity-distance [cm] to redshift.
+        """
+        dl = self._interp(zz, self._grid_z, self._grid_dlum, self._sort_z)
+        return dl
+
     def get_grid(self):
         """Return an array of the grid of interpolation points for each cosmological parameter.
 
@@ -200,3 +213,14 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
             names.append(nam)
 
         return grid, names, units
+
+    def dVcdz(self, zz):
+        """Differential comoving volume of the universe.
+
+        From Hogg1999 Eq. 28
+        """
+        # This is 4*pi*D_h
+        retval = (4.0*np.pi*self.SPLC/self.H(0.0).cgs.value)
+        com_dist = self.comoving_distance(zz).cgs.value
+        retval *= np.square(com_dist) / self.efunc(zz)
+        return retval
