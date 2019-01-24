@@ -12,7 +12,7 @@ setup(
     version=VERSION,
     author="Luke Zoltan Kelley",
     author_email="lkelley@cfa.harvard.edu",
-    description=("General, commonly used functions for other projects."),
+    description="",
     license="MIT",
     url="https://github.com/lzkelley/cosmopy",
     download_url="https://github.com/lzkelley/cosmopy/archive/v{}.tar.gz".format(VERSION),
