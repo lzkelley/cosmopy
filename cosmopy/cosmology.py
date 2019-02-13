@@ -175,6 +175,18 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
         dl = self._interp(zz, self._grid_z, self._grid_dlum, self._sort_z)
         return dl
 
+    def _dlum_to_z(self, dl):
+        """Convert from luminosity-distance [cm] to redshift.
+        """
+        zz = self._interp(dl, self._grid_dlum, self._grid_z, self._sort_dlum)
+        return zz
+
+    def _dcom_to_z(self, dc):
+        """Convert from comoving-distance [cm] to redshift.
+        """
+        zz = self._interp(dc, self._grid_dcom, self._grid_z, self._sort_dcom)
+        return zz
+
     def get_grid(self):
         """Return an array of the grid of interpolation points for each cosmological parameter.
 
