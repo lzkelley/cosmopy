@@ -145,6 +145,12 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
         zz = self._interp(age, self._grid_age, self._grid_z, self._sort_age)
         return zz
 
+    def z_to_tage(self, redz):
+        """Convert from age of the universe [seconds] to redshift.
+        """
+        tage = self._interp(redz, self._grid_z, self._grid_age, self._sort_z)
+        return tage
+
     def tlbk_to_z(self, lbk):
         """Convert from lookback time [seconds] to redshift.
         """
