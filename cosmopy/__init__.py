@@ -1,8 +1,8 @@
 """
 """
 
-__version__ = "3.1.2"
-__author__ = "Luke Zoltan Kelley <lkelley@cfa.harvard.edu>"
+__version__ = "3.2.1"
+__author__ = "Luke Zoltan Kelley <lzkelley@northwestern.edu>"
 __license__ = "MIT"
 
 import astropy as ap
@@ -27,4 +27,4 @@ U_CM = ap.units.Unit('cm')       # centimeter unit
 COLORED_OUTPUT = True
 
 
-from . __main__ import get_cosmology, api  # noqa
+from . __main__ import get_cosmology, api, Cosmology  # noqa
