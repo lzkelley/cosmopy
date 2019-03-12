@@ -52,6 +52,7 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
         self._grid_z = zgrid
         self._sort_z = np.argsort(zgrid)
         self._grid_a = self._z_to_a(zgrid)
+        self._sort_a = np.argsort(self._grid_a)
         # Calculate corresponding values in desired parameters
         #    Ages in seconds
         self._grid_age = self.age(zgrid).cgs.value
@@ -149,6 +150,12 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
         """Convert from age of the universe [seconds] to redshift.
         """
         tage = self._interp(redz, self._grid_z, self._grid_age, self._sort_z)
+        return tage
+
+    def a_to_tage(self, sca):
+        """Convert from age of the universe [seconds] to redshift.
+        """
+        tage = self._interp(sca, self._grid_a, self._grid_age, self._sort_a)
         return tage
 
     def tlbk_to_z(self, lbk):
