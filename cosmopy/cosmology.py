@@ -147,10 +147,10 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
         return zz
 
     def tage_to_a(self, age):
-        """Convert from age of the universe [seconds] to scale-factor.
+        """Convert from age of the universe [seconds] to redshift.
         """
-        sa = self._interp(age, self._grid_age, self._grid_a, self._sort_age)
-        return sa
+        aa = self._interp(age, self._grid_age, self._grid_a, self._sort_age)
+        return aa
 
     def z_to_tage(self, redz):
         """Convert from age of the universe [seconds] to redshift.
@@ -245,13 +245,22 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
 
         return grid, names, units
 
-    def dVcdz(self, zz):
+    def dVcdz(self, zz, cgs=True):
         """Differential comoving volume of the universe.
 
         From Hogg1999 Eq. 28
         """
         # This is 4*pi*D_h
-        retval = (4.0*np.pi*self.SPLC/self.H(0.0).cgs.value)
-        com_dist = self.comoving_distance(zz).cgs.value
-        retval *= np.square(com_dist) / self.efunc(zz)
+        efac = self.efunc(zz)
+        if cgs:
+            retval = (4.0*np.pi*self.SPLC/self.H(0.0).cgs.value)
+            com_dist = self.comoving_distance(zz).cgs.value
+        else:
+            retval = (4.0*np.pi*ap.constants.c/self.H(0.0)).decompose()
+            com_dist = self.comoving_distance(zz)
+
+        retval = retval * np.square(com_dist) / efac
+        # Using `astropy` this gives a `m * Mpc^2` object for some reason; simplify
+        if not cgs:
+            retval = retval.to('Mpc3')
         return retval
