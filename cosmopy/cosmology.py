@@ -170,6 +170,12 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
         zz = self._interp(lbk, self._grid_lbk, self._grid_z, self._sort_lbk)
         return zz
 
+    def z_to_tlbk(self, redz):
+        """Convert from redshift to lookback time [seconds].
+        """
+        zz = self._interp(redz, self._grid_z, self._grid_lbk, self._sort_z)
+        return zz
+
     def dcom_to_z(self, dc):
         """Convert from comoving-distance [cm] to redshift.
         """
@@ -182,29 +188,17 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
         zz = self._interp(dl, self._grid_dlum, self._grid_z, self._sort_dlum)
         return zz
 
-    def _z_to_dcom(self, zz):
+    def z_to_dcom(self, zz):
         """Convert from comoving-distance [cm] to redshift.
         """
         dc = self._interp(zz, self._grid_z, self._grid_dcom, self._sort_z)
         return dc
 
-    def _z_to_dlum(self, zz):
+    def z_to_dlum(self, zz):
         """Convert from luminosity-distance [cm] to redshift.
         """
         dl = self._interp(zz, self._grid_z, self._grid_dlum, self._sort_z)
         return dl
-
-    def _dlum_to_z(self, dl):
-        """Convert from luminosity-distance [cm] to redshift.
-        """
-        zz = self._interp(dl, self._grid_dlum, self._grid_z, self._sort_dlum)
-        return zz
-
-    def _dcom_to_z(self, dc):
-        """Convert from comoving-distance [cm] to redshift.
-        """
-        zz = self._interp(dc, self._grid_dcom, self._grid_z, self._sort_dcom)
-        return zz
 
     def get_grid(self):
         """Return an array of the grid of interpolation points for each cosmological parameter.
