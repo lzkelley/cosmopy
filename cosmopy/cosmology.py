@@ -34,7 +34,7 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
     Omega0 = 0.286
     OmegaBaryon = 0.0463
     HubbleParam = 0.693
-    H0 = HubbleParam * 100.0
+    Hubble0 = HubbleParam * 100.0
     SPLC = 29979245800.0
 
     # z=0.0 is added automatically
@@ -43,7 +43,7 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
 
     def __init__(self):
         # Initialize parent class
-        super().__init__(H0=self.H0, Om0=self.Omega0, Ob0=self.OmegaBaryon)
+        super().__init__(H0=self.Hubble0, Om0=self.Omega0, Ob0=self.OmegaBaryon)
 
         # Create grids for interpolations
         # -------------------------------
