@@ -326,7 +326,7 @@ def parse_args(args):
 
     if sets.version:
         from . import __version__
-        print(f"cosmopy :: https://github.com/lzkelley/cosmopy/")
+        print("cosmopy :: https://github.com/lzkelley/cosmopy/")
         print(os.path.abspath(__file__))
         print(__version__)
         sys.exit(1)
