@@ -1,15 +1,15 @@
 cosmopy
-=========
+=======
 
 .. image:: https://img.shields.io/travis/lzkelley/cosmopy.svg
     :target: https://travis-ci.org/lzkelley/cosmopy?branch=master
-    
+
 .. image:: https://img.shields.io/codecov/c/github/lzkelley/cosmopy/master.svg
     :target: https://codecov.io/gh/lzkelley/cosmopy
-          
-Quickly calculate cosmological parameters.  
 
-- Provides both command-line and API interfaces.  
+Quickly calculate cosmological parameters.
+
+- Provides both command-line and API interfaces.
 
 - Uses the machinery from the `astropy.cosmology` package.
 
@@ -20,7 +20,7 @@ The below gif shows three examples: inputting a redshift, a luminosity distance 
 
 .. image:: https://raw.githubusercontent.com/lzkelley/cosmopy/dev/docs/cosmopy_demo.gif
    :height: 100px
-   
+
 
 Installation
 ------------
@@ -28,9 +28,9 @@ Installation
 Using `pip`:
 
 ::
-    
+
     pip install cosmopy
-    
+
 From source:
 
 ::
@@ -48,11 +48,11 @@ Usage
     ::
 
         $ cosmo --help
-         
+
          usage: cosmo [-h] [-z Z] [-a A] [-dc DC] [-dl DL] [-tl TL] [-ta TA] [-v]
- 
+
          cosmopy: cosmological calculator.
- 
+
          optional arguments:
            -h, --help      show this help message and exit
            -z Z            target redshift z
@@ -66,9 +66,9 @@ Usage
     For example, entering an input redshift of 0.2:
 
     ::
-        
+
         $ cosmo -z 0.2
-      
+
                z = 0.2000                                : Redshift
                a = 0.8333                                : Scale-factor
              D_c = 815.3960 Mpc      ~ 2.5160e+27 cm     : Comoving Distance
@@ -82,9 +82,9 @@ Usage
     or an input luminosity-distance of 400 Mpc:
 
     ::
-        
+
         $ cosmo -dl 400Mpc
-      
+
                z = 0.0880                                : Redshift
                a = 0.9192                                : Scale-factor
              D_c = 367.6631 Mpc      ~ 1.1345e+27 cm     : Comoving Distance
@@ -98,8 +98,8 @@ Usage
 - Python API
 
     The module can be imported as `cosmopy`, from which the primary access point is the `api` function which accepts two arguments: a `key` (a target cosmological parameter) and a `value` of that parameter (optionally including units).  The function returns a dictionary with the computed values as key: value pairs (both strings).  For example:
-    
+
     ::
-        
+
         $ python -c "import cosmopy; print(cosmopy.api('dl', '1.2 Gpc'))"
          {'z': '0.2396', 'dl': '1200.0000 Mpc', 'tl': '2.8359 Gyr', 'dc': '968.0336 Mpc', 'ta': '10.9153 Gyr', 'da': '780.9075 Mpc', 'dm': '40.3959', 'arc': '3785.9464 pc', 'a': '0.8067'}
