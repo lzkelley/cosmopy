@@ -283,7 +283,7 @@ def parse_input(inval, unit=None):
 
     """
     try:
-        val = np.float(inval)
+        val = float(inval)
     except ValueError:
         try:
             val = ap.units.quantity.Quantity(inval)
