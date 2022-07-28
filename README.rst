@@ -19,7 +19,7 @@ The user provides an input parameter (e.g. redshift or luminosity-distance) and 
 The below gif shows three examples: inputting a redshift, a luminosity distance (`-dl 400Mpc`), and an age of the universe (`-ta 3.2Gyr`).
 
 .. image:: https://raw.githubusercontent.com/lzkelley/cosmopy/dev/docs/cosmopy_demo.gif
-   :height: 100px
+   :height: 600px
 
 
 Installation
