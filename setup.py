@@ -2,43 +2,44 @@ from setuptools import setup
 
 FNAME_README = "README.rst"
 FNAME_REQUIREMENTS = "requirements.txt"
-VERSION = "3.2.1"
+FNAME_VERSION = "cosmopy/VERSION.txt"
 
-readme = open(FNAME_README).read()
-requirements = open(FNAME_REQUIREMENTS).read().split()
+with open(FNAME_REQUIREMENTS, "r") as inn:
+    requirements = inn.read().splitlines()
+
+with open(FNAME_README, "r") as inn:
+    long_description = inn.read().strip()
+
+with open(FNAME_VERSION, "r") as inn:
+    version = inn.read().strip()
 
 setup(
     name="cosmopy",
-    version=VERSION,
     author="Luke Zoltan Kelley",
-    author_email="lkelley@cfa.harvard.edu",
+    author_email="lzkelley@northwestern.edu",
+    version=version,
     description="",
     license="MIT",
     url="https://github.com/lzkelley/cosmopy",
-    download_url="https://github.com/lzkelley/cosmopy/archive/v{}.tar.gz".format(VERSION),
+    download_url="https://github.com/lzkelley/cosmopy/archive/v{}.tar.gz".format(version),
     packages=['cosmopy'],
-    include_package_data=True,
     entry_points={
         'console_scripts': [
             'cosmo = cosmopy.__main__:main'
         ]
     },
+    include_package_data=True,
     install_requires=requirements,
-    long_description=readme,
-    keywords=['utilities', 'physics', 'astronomy', 'cosmology',
-              'astrophysics', 'calculator'],
+    long_description=long_description,
+    long_description_content_type='text/markdown',
+    keywords=['utilities', 'physics', 'astronomy', 'cosmology', 'astrophysics', 'calculator'],
     CLASSIFIERS=[
-        "Development Status :: 4 - Beta",
         "Intended Audience :: Science/Research",
         "Natural Language :: English",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 2",
-        "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.5",
-        "Programming Language :: Python :: Implementation :: PyPy",
         "Topic :: Education",
         "Topic :: Scientific/Engineering",
         "Topic :: Scientific/Engineering :: Astronomy",
