@@ -1,0 +1,8 @@
+-r requirements.txt
+pytest
+coverage
+codecov
+flake8
+tox
+jupyter
+nbconvert

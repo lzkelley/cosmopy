@@ -1,8 +1,5 @@
 numpy
 scipy
 astropy
-nose
-coverage
 future
 click
-codecov
