@@ -1,7 +1,9 @@
 """Interface to the cosmopy package via either command-line or python API.
 """
 import argparse
+import os
 import sys
+
 import click
 
 import numpy as np
@@ -324,6 +326,8 @@ def parse_args(args):
 
     if sets.version:
         from . import __version__
+        print(f"cosmopy :: https://github.com/lzkelley/cosmopy/")
+        print(os.path.abspath(__file__))
         print(__version__)
         sys.exit(1)
 
