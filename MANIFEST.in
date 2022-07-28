@@ -1,0 +1,8 @@
+include MANIFEST.in
+include *.txt *.rst *.md
+include setup.py
+include notebooks/*.ipynb
+include cosmopy/VERSION.txt
+
+recursive-include docs *
+graft cosmopy

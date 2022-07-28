@@ -33,17 +33,5 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     keywords=['utilities', 'physics', 'astronomy', 'cosmology', 'astrophysics', 'calculator'],
-    CLASSIFIERS=[
-        "Intended Audience :: Science/Research",
-        "Natural Language :: English",
-        "License :: OSI Approved :: MIT License",
-        "Operating System :: OS Independent",
-        "Programming Language :: Python",
-        "Programming Language :: Python :: 3",
-        "Topic :: Education",
-        "Topic :: Scientific/Engineering",
-        "Topic :: Scientific/Engineering :: Astronomy",
-        "Topic :: Scientific/Engineering :: Physics",
-        "Topic :: Utilities"
-    ]
+    python_requires=">=3.5",
 )
