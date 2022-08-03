@@ -55,4 +55,5 @@ jobs:
           python -m pip freeze
 
       - name: Run tox
-        run: tox
+        # Run tox using the version of Python in `PATH` based on matrix
+        run: tox -e py
