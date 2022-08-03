@@ -1,11 +1,7 @@
 cosmopy
 =======
 
-.. image:: https://img.shields.io/travis/lzkelley/cosmopy.svg
-    :target: https://travis-ci.org/lzkelley/cosmopy?branch=master
-
-.. image:: https://img.shields.io/codecov/c/github/lzkelley/cosmopy/master.svg
-    :target: https://codecov.io/gh/lzkelley/cosmopy
+|build-status| |coverage|
 
 Quickly calculate cosmological parameters.
 
@@ -103,3 +99,16 @@ Usage
 
         $ python -c "import cosmopy; print(cosmopy.api('dl', '1.2 Gpc'))"
          {'z': '0.2396', 'dl': '1200.0000 Mpc', 'tl': '2.8359 Gyr', 'dc': '968.0336 Mpc', 'ta': '10.9153 Gyr', 'da': '780.9075 Mpc', 'dm': '40.3959', 'arc': '3785.9464 pc', 'a': '0.8067'}
+
+
+
+
+.. |build-status| image:: https://github.com/lzkelley/cosmopy/actions/workflows/main.yml/badge.svg
+    :alt: CI build status
+    :scale: 100%
+    :target: https://github.com/lzkelley/cosmopy/actions/workflows/main.yml
+
+.. |coverage| image:: https://img.shields.io/codecov/c/github/lzkelley/cosmopy/master.svg
+    :alt: coverage
+    :scale: 100%
+    :target: https://codecov.io/gh/lzkelley/cosmopy
