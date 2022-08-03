@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: tox pytest unit tests
 
 # Controls when the workflow will run
 on:
@@ -55,5 +55,4 @@ jobs:
           python -m pip freeze
 
       - name: Run tox
-        # Run tox using the version of Python in `PATH`
-        run: tox -e py
+        run: tox

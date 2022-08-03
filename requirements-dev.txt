@@ -1,8 +1,10 @@
 -r requirements.txt
 pytest
-coverage
-codecov
+pytest-cov
+# coverage
+# codecov
 flake8
 tox
+tox-conda
 jupyter
 nbconvert
