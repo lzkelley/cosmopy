@@ -1,7 +1,8 @@
 cosmopy
 =======
 
-|build-status| |coverage|
+|version| |build-status| |coverage|
+
 
 Quickly calculate cosmological parameters.
 
@@ -101,7 +102,8 @@ Usage
          {'z': '0.2396', 'dl': '1200.0000 Mpc', 'tl': '2.8359 Gyr', 'dc': '968.0336 Mpc', 'ta': '10.9153 Gyr', 'da': '780.9075 Mpc', 'dm': '40.3959', 'arc': '3785.9464 pc', 'a': '0.8067'}
 
 
-
+.. |version| image:: https://badge.fury.io/gh/lzkelley%2Fcosmopy.svg
+    :target: https://badge.fury.io/gh/lzkelley%2Fcosmopy
 
 .. |build-status| image:: https://github.com/lzkelley/cosmopy/actions/workflows/main.yml/badge.svg
     :alt: CI build status
