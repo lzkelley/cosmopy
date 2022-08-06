@@ -81,8 +81,8 @@ class TestCosmology:
         aa = [0.25, 0.5, 0.666666666, 1.0]
 
         for z, a in zip(zz, aa):
-            _a = Cosmology._z_to_a(z)
-            _z = Cosmology._a_to_z(a)
+            _a = Cosmology.z_to_a(z)
+            _z = Cosmology.a_to_z(a)
 
             print("z = {} ===> a = {} ({})".format(z, _a, a))
             assert np.isclose(z, _z)
@@ -91,16 +91,16 @@ class TestCosmology:
             assert np.isclose(a, _a)
 
         # Test array input
-        assert (np.allclose(Cosmology._z_to_a(zz), aa))
-        assert (np.allclose(Cosmology._a_to_z(aa), zz))
+        assert (np.allclose(Cosmology.z_to_a(zz), aa))
+        assert (np.allclose(Cosmology.a_to_z(aa), zz))
 
         # Test out-of-domain errors
         with pytest.raises(ValueError):
-            Cosmology._a_to_z(-0.1)
+            Cosmology.a_to_z(-0.1)
         with pytest.raises(ValueError):
-            Cosmology._a_to_z(1.1)
+            Cosmology.a_to_z(1.1)
         with pytest.raises(ValueError):
-            Cosmology._z_to_a(-0.2)
+            Cosmology.z_to_a(-0.2)
 
         return
 
