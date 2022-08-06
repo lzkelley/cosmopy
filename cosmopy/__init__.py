@@ -26,5 +26,5 @@ U_CM = ap.units.Unit('cm')       # centimeter unit
 
 COLORED_OUTPUT = True
 
-
-from . __main__ import get_cosmology, api, Cosmology  # noqa
+from . cosmology import Cosmology          # noqa
+from . __main__ import get_cosmology, api  # noqa

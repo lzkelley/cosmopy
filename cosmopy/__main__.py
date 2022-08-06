@@ -391,10 +391,10 @@ def api(key, val, cosmo=None):
     return retvals
 
 
-def get_cosmology():
+def get_cosmology(*args, **kwargs):
     """Construct an instance of the `Cosmology` class and return.
     """
-    cosmo = Cosmology()
+    cosmo = Cosmology(*args, **kwargs)
     return cosmo
 
 

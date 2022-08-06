@@ -21,6 +21,12 @@ import numpy as np
 
 from . import SPLC
 
+# These are WMAP9 parameters, see [WMAP9], Table 3, WMAP+BAO+H0
+Omega0 = 0.2880                #: Matter density parameter "Om0"
+OmegaBaryon = 0.0472           #: Baryon density parameter "Ob0"
+HubbleParam = 0.6933           #: Hubble Parameter as H0/[100 km/s/Mpc], i.e. 0.69 instead of 69
+# Hubble0 = HubbleParam * 100.0  # NOTE: this *cannot* be named `H0` or `_H0` --- conflicts with astropy internals
+
 
 class Cosmology(ap.cosmology.FlatLambdaCDM):
     """Class for calculating (and inverting) cosmological distance measures.
@@ -34,19 +40,29 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
 
     """
 
-    # These are WMAP9 parameters, see [WMAP9], Table 3, WMAP+BAO+H0
-    Omega0 = 0.2880                #: Matter density parameter
-    OmegaBaryon = 0.0472           #: Baryon density parameter
-    HubbleParam = 0.6933           #: Hubble Parameter as H0/[100 km/s/Mpc], i.e. 0.69 instead of 69
-    Hubble0 = HubbleParam * 100.0  # NOTE: this *cannot* be `H0` or `_H0` --- conflicts with astropy internals
-
     # NOTE: z=0.0 is added automatically
     _Z_GRID = [1e4, 100.0, 10.0, 4.0, 2.0, 1.0, 0.5, 0.1, 0.01]
     _INTERP_POINTS = 30
 
-    def __init__(self):
+    def __init__(self, h=None, H0=None, Om0=None, Ob0=None, **kwargs):
+        """
+        """
+        # ---- Set Defaults
+        if (H0 is not None) and (h is not None):
+            raise ValueError("Both `h` and `H0` cannot both be given!")
+        if H0 is None:
+            if h is None:
+                h = HubbleParam
+            H0 = h * 100.0  # Hubble Parameter h = H0/[100 km/s/Mpc], i.e. 0.69 instead of 69 km/s/Mpc
+        if Om0 is None:
+            Om0 = Omega0
+        if Ob0 is None:
+            Ob0 = OmegaBaryon
+        kw = dict(H0=H0, Om0=Om0, Ob0=Ob0)
+        kwargs.update(kw)
+
         # Initialize parent class
-        super().__init__(H0=self.Hubble0, Om0=self.Omega0, Ob0=self.OmegaBaryon)
+        super().__init__(**kwargs)
 
         # Create grids for interpolations
         # -------------------------------
@@ -75,7 +91,8 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
         """
         # rstr = f"{__class__} :: H0 = {self.Hubble0}, Om0 = {self.Omega0}, Ob0 = {self.OmegaBaryon}"
         rstr = "{} :: H0 = {:.8f}, Om0 = {:.8f}, Ob0 = {:.8f}".format(
-            __class__, self.Hubble0, self.Omega0, self.OmegaBaryon
+            # __class__, self.Hubble0, self.Omega0, self.OmegaBaryon
+            __class__, self.H0, self.Om0, self.Ob0
         )
         return rstr
 
