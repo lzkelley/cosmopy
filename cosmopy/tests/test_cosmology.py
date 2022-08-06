@@ -13,7 +13,7 @@ class TestCosmology:
     funcs_forw = ["luminosity_distance", "comoving_distance", "age", "lookback_time"]
     funcs_back = ["dlum_to_z", "dcom_to_z", "tage_to_z", "tlbk_to_z"]
     z_low = 0.001
-    vals_low = [1.3359e+25, 1.3346e+25, 4.3459e+17, 4.4494e+14]
+    vals_low = [1.3353e+25, 1.3340e+25, 4.3356e+17, 4.4475e+14]
 
     def test_init(self):
         from cosmopy.cosmology import Cosmology
@@ -137,7 +137,7 @@ class TestCosmology:
         from cosmopy.cosmology import Cosmology
         cosmo = Cosmology()
 
-        grid, names, units = cosmo.get_grid()
+        grid, names, units = cosmo._get_grid()
         z_grid = cosmo._grid_z
         num = z_grid.size
         print(names)

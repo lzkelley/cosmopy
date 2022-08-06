@@ -4,11 +4,12 @@ CHANGES
 
 To-Do
 -----
-    -   Improve tests to better capture install process (requirements, etc).
     -   CMB Temperature
     -   Allow lists of target values (instead of single).
     -   Online documentation.
-    
+    -   Allow better usage of custom cosmo parameters
+    -   Test against astropy instance using custom cosmological parameters
+
 
 Current
 -------
@@ -25,7 +26,7 @@ v3.1.3 - 2018-01-03
     -   Added colored output using the 'click' package (added to dependencies).
     -   Added significant unit-testing.  Coverage currently at 98%.
     -   Added function documentation.
-    
+
 
 v3.1.2 - 2018-01-01
 -------------------
@@ -49,7 +50,7 @@ v3.1 - 2017-12-31
     -   Command-line input is parsed using astropy to identify input units.
     -   API functions added to retrieve cosmological parameters via python method calls.
         -   Can also retrieve underlying `Cosmology` instances directly.
-    
+
 
 v3.0 - 2017-12-24
 -----------------
