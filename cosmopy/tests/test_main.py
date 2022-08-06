@@ -12,7 +12,7 @@ class TestMain:
 
     np.random.seed(986523)
     z_low = 0.001
-    vals_low = [1.3359e+25, 1.3346e+25, 4.3459e+17, 4.4494e+14]
+    vals_low = [1.3353e+25, 1.3340e+25, 4.3356e+17, 4.4475e+14]
     arg_keys = ['dl', 'dc', 'ta', 'tl']
 
     def test__parse_args(self):
@@ -43,10 +43,10 @@ class TestMain:
         with pytest.raises(SystemExit):
             main(['-v'])
 
-        vals = self.vals_low + [0.1, 0.5]
         keys = self.arg_keys + ['z', 'a']
+        vals = self.vals_low + [0.1, 0.5]
 
-        for vv, kk in zip(vals, keys):
+        for kk, vv in zip(keys, vals):
             args = ["-" + kk, "{:.4e}".format(vv)]
             print("args = ", args)
             main(args)
@@ -113,10 +113,11 @@ class TestMain:
         with pytest.raises(KeyError):
             api('m', 0.2)
 
+        # These values were calculated using built-in astropy cosmology instance, for comparison
         outs = {
-            'z': '0.1000', 'a': '0.9091', 'ta': '12.4695 Gyr', 'dl': '465.4365 Mpc',
-            'da': '384.6582 Mpc', 'tl': '1.3158 Gyr', 'dc': '423.1241 Mpc',
-            'arc': '1864.8758 pc', 'dm': '38.3393'
+            'z': '0.1000', 'a': '0.9091', 'ta': '12.4377 Gyr', 'dl': '465.1654 Mpc',
+            'da': '384.4342 Mpc', 'tl': '1.3150 Gyr', 'dc': '422.8776 Mpc',
+            'arc': '1863.7897 pc', 'dm': '38.3380'
         }
 
         def compare(aa):

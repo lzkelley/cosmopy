@@ -53,7 +53,7 @@ def calc_basic(cosmo, sets):
     # Scalefactor
     elif sets.a is not None:
         scale = parse_input(sets.a)
-        redz = cosmo._a_to_z(scale)
+        redz = cosmo.a_to_z(scale)
 
     # Age of the Universe
     elif sets.ta is not None:
@@ -92,7 +92,7 @@ def calc_basic(cosmo, sets):
         raise ValueError("No input given!")
 
     # Calculate scale-factor if needed
-    scale = cosmo._z_to_a(redz) if scale is None else scale
+    scale = cosmo.z_to_a(redz) if scale is None else scale
     results['a'] = scale
     results['z'] = redz
 
@@ -391,10 +391,10 @@ def api(key, val, cosmo=None):
     return retvals
 
 
-def get_cosmology():
+def get_cosmology(*args, **kwargs):
     """Construct an instance of the `Cosmology` class and return.
     """
-    cosmo = Cosmology()
+    cosmo = Cosmology(*args, **kwargs)
     return cosmo
 
 

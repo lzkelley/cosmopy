@@ -13,7 +13,7 @@ class TestCosmology:
     funcs_forw = ["luminosity_distance", "comoving_distance", "age", "lookback_time"]
     funcs_back = ["dlum_to_z", "dcom_to_z", "tage_to_z", "tlbk_to_z"]
     z_low = 0.001
-    vals_low = [1.3359e+25, 1.3346e+25, 4.3459e+17, 4.4494e+14]
+    vals_low = [1.3353e+25, 1.3340e+25, 4.3356e+17, 4.4475e+14]
 
     def test_init(self):
         from cosmopy.cosmology import Cosmology
@@ -81,8 +81,8 @@ class TestCosmology:
         aa = [0.25, 0.5, 0.666666666, 1.0]
 
         for z, a in zip(zz, aa):
-            _a = Cosmology._z_to_a(z)
-            _z = Cosmology._a_to_z(a)
+            _a = Cosmology.z_to_a(z)
+            _z = Cosmology.a_to_z(a)
 
             print("z = {} ===> a = {} ({})".format(z, _a, a))
             assert np.isclose(z, _z)
@@ -91,16 +91,16 @@ class TestCosmology:
             assert np.isclose(a, _a)
 
         # Test array input
-        assert (np.allclose(Cosmology._z_to_a(zz), aa))
-        assert (np.allclose(Cosmology._a_to_z(aa), zz))
+        assert (np.allclose(Cosmology.z_to_a(zz), aa))
+        assert (np.allclose(Cosmology.a_to_z(aa), zz))
 
         # Test out-of-domain errors
         with pytest.raises(ValueError):
-            Cosmology._a_to_z(-0.1)
+            Cosmology.a_to_z(-0.1)
         with pytest.raises(ValueError):
-            Cosmology._a_to_z(1.1)
+            Cosmology.a_to_z(1.1)
         with pytest.raises(ValueError):
-            Cosmology._z_to_a(-0.2)
+            Cosmology.z_to_a(-0.2)
 
         return
 
@@ -137,7 +137,7 @@ class TestCosmology:
         from cosmopy.cosmology import Cosmology
         cosmo = Cosmology()
 
-        grid, names, units = cosmo.get_grid()
+        grid, names, units = cosmo._get_grid()
         z_grid = cosmo._grid_z
         num = z_grid.size
         print(names)
