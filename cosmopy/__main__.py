@@ -406,7 +406,6 @@ def main(args=None):
     # Initialize
     # ----------------
     # Load arguments
-    print(f"{args=}, {sys.argv=}")
     if args is None:
         args = sys.argv[1:]
     sets = parse_args(args)
