@@ -102,15 +102,14 @@ Usage
          {'z': '0.2396', 'dl': '1200.0000 Mpc', 'tl': '2.8359 Gyr', 'dc': '968.0336 Mpc', 'ta': '10.9153 Gyr', 'da': '780.9075 Mpc', 'dm': '40.3959', 'arc': '3785.9464 pc', 'a': '0.8067'}
 
 
-.. |version| image:: https://badge.fury.io/gh/lzkelley%2Fcosmopy.svg
-    :target: https://badge.fury.io/gh/lzkelley%2Fcosmopy
+.. |version| image:: https://img.shields.io/pypi/v/cosmopy
+    :alt: PyPI
+    :target: https://pypi.org/project/cosmopy/
 
-.. |build-status| image:: https://github.com/lzkelley/cosmopy/actions/workflows/main.yml/badge.svg
-    :alt: CI build status
-    :scale: 100%
-    :target: https://github.com/lzkelley/cosmopy/actions/workflows/main.yml
+.. |build-status| image:: https://github.com/lzkelley/cosmopy/actions/workflows/build-status.yml/badge.svg
+    :alt: build-status
+    :target: https://github.com/lzkelley/cosmopy/actions/workflows/build-status.yml
 
-.. |coverage| image:: https://img.shields.io/codecov/c/github/lzkelley/cosmopy/master.svg
+.. |coverage| image:: https://codecov.io/gh/lzkelley/cosmopy/branch/main/graph/badge.svg?token=ZRPgCWUaVW
     :alt: coverage
-    :scale: 100%
     :target: https://codecov.io/gh/lzkelley/cosmopy
