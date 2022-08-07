@@ -27,6 +27,13 @@ OmegaBaryon = 0.0472           #: Baryon density parameter "Ob0"
 HubbleParam = 0.6933           #: Hubble Parameter as H0/[100 km/s/Mpc], i.e. 0.69 instead of 69
 # Hubble0 = HubbleParam * 100.0  # NOTE: this *cannot* be named `H0` or `_H0` --- conflicts with astropy internals
 
+# Define redshift grid: `_Z_GRID` defines the course grid points, between which `_GRID_SIZE` points
+# are added inbetween.  i.e. if ``N = len(_Z_GRID)`` then there will be `N * _GRID_SIZE + 1` total
+# grid points
+# NOTE: z=0.0 is added automatically
+_Z_GRID = [1e4, 100.0, 10.0, 4.0, 2.0, 1.0, 0.5, 0.1, 0.01]
+_GRID_SIZE_DEF = 100
+
 
 class Cosmology(ap.cosmology.FlatLambdaCDM):
     """Class for calculating (and inverting) cosmological distance measures.
@@ -40,11 +47,7 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
 
     """
 
-    # NOTE: z=0.0 is added automatically
-    _Z_GRID = [1e4, 100.0, 10.0, 4.0, 2.0, 1.0, 0.5, 0.1, 0.01]
-    _INTERP_POINTS = 30
-
-    def __init__(self, h=None, H0=None, Om0=None, Ob0=None, **kwargs):
+    def __init__(self, h=None, H0=None, Om0=None, Ob0=None, size=None, **kwargs):
         """
         """
         # ---- Set Defaults
@@ -60,6 +63,9 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
             Ob0 = OmegaBaryon
         kw = dict(H0=H0, Om0=Om0, Ob0=Ob0)
         kwargs.update(kw)
+        if size is None:
+            size = _GRID_SIZE_DEF
+        self._size = size
 
         # Initialize parent class
         super().__init__(**kwargs)
@@ -67,7 +73,7 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
         # Create grids for interpolations
         # -------------------------------
         #    Create a grid in redshift at which functions will be evaluated
-        zgrid = self._init_interp_grid(self._Z_GRID, self._INTERP_POINTS)
+        zgrid = self._init_interp_grid(_Z_GRID, self._size)
         self._grid_z = zgrid
         self._sort_z = np.argsort(zgrid)
         self._grid_a = self.z_to_a(zgrid)
