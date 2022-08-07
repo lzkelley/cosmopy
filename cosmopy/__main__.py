@@ -10,7 +10,7 @@ import numpy as np
 import astropy as ap
 
 from . cosmology import Cosmology
-from . import PC, ARCSEC, U_SEC, U_CM, COLORED_OUTPUT
+from . import PC, ARCSEC, U_SEC, U_CM
 
 _RESULTS_FUNCS = ['luminosity_distance', 'comoving_distance', 'lookback_time', 'age']
 
@@ -138,8 +138,6 @@ def calc_derived(results):
 def output_print(results, print_output=True):
     """Format and print the given cosmological parameters to stdout.
 
-    If the global `COLORED_OUTPUT` parameter is true, `click` is used to print colored output.
-
     Arguments
     ---------
     results : `Results` namedtuple
@@ -177,12 +175,13 @@ def output_print(results, print_output=True):
         except AttributeError:
             pass
         v_std = vv if tt is None else vv.to(tt)
-        try:
-            base = "{:>10s} = {:.4f}".format(ss, v_std)
-        except Exception:
-            print("Failed constructing `base` string on '{}' ({})".format(nn, ss))
-            print("  Value = '{}', type = '{}'".format(v_std, type(v_std)))
-            raise
+        base = "{:>10s} = {:.4f}".format(ss, v_std)
+        # try:
+        #     base = "{:>10s} = {:.4f}".format(ss, v_std)
+        # except Exception:
+        #     print("Failed constructing `base` string on '{}' ({})".format(nn, ss))
+        #     print("  Value = '{}', type = '{}'".format(v_std, type(v_std)))
+        #     raise
 
         try:
             v_cgs = vv.cgs
@@ -198,17 +197,14 @@ def output_print(results, print_output=True):
     if print_output:
         print("")
 
-        if COLORED_OUTPUT:
-            for val in printvals:
-                click.secho('{base:30s}'.format(base=val['base']),
-                            bold=True, nl=False, fg=_COLOR_BASE)
-                click.secho('{conv:20s}'.format(conv=val['conv']),
-                            bold=False, nl=False, fg=_COLOR_CONV)
-                click.secho(' : ', bold=True, nl=False)  # , fg="green")
-                click.secho('{name}'.format(name=val["name"]),
-                            bold=False, nl=True, fg=_COLOR_NAME)
-        else:
-            print("\n".join(outs))
+        for val in printvals:
+            click.secho('{base:30s}'.format(base=val['base']),
+                        bold=True, nl=False, fg=_COLOR_BASE)
+            click.secho('{conv:20s}'.format(conv=val['conv']),
+                        bold=False, nl=False, fg=_COLOR_CONV)
+            click.secho(' : ', bold=True, nl=False)  # , fg="green")
+            click.secho('{name}'.format(name=val["name"]),
+                        bold=False, nl=True, fg=_COLOR_NAME)
 
         print("")
 
@@ -251,12 +247,13 @@ def output_api(results):
         except AttributeError:
             pass
         v_std = vv if tt is None else vv.to(tt)
-        try:
-            base = "{:.4f}".format(v_std)
-        except Exception:
-            print("Failed constructing `base` string on '{}' ({})".format(nn, ss))
-            print("  Value = '{}', type = '{}'".format(v_std, type(v_std)))
-            raise
+        base = "{:.4f}".format(v_std)
+        # try:
+        #     base = "{:.4f}".format(v_std)
+        # except Exception:
+        #     print("Failed constructing `base` string on '{}' ({})".format(nn, ss))
+        #     print("  Value = '{}', type = '{}'".format(v_std, type(v_std)))
+        #     raise
 
         retvals[kk] = base
 
@@ -409,6 +406,7 @@ def main(args=None):
     # Initialize
     # ----------------
     # Load arguments
+    print(f"{args=}, {sys.argv=}")
     if args is None:
         args = sys.argv[1:]
     sets = parse_args(args)

@@ -238,68 +238,284 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
 
         return grid, names, units
 
-    # ==== a/z to distance measures ====
+    # ==== a to distance measures ====
+
+    def a_to_dcom(self, scafa):
+        """Get the comoving distance [cm] at the given scale factor(s).
+
+        Parameters
+        ----------
+        scafa : array_like,
+            Scale-factor ($a$) describing the distance/time of the universe. Unitless in (0.0, 1.0].
+
+        Returns
+        -------
+        dc : array_like
+            Comoving distance to the given scale-factors.  Units of [cm].
+
+        """
+        dc = self._interp(scafa, self._grid_a, self._grid_dcom, self._sort_a)
+        return dc
+
+    def a_to_dlum(self, scafa):
+        """Get the luminosity distance [cm] at the given scale factor(s).
+
+        Parameters
+        ----------
+        scafa : array_like,
+            Scale-factor ($a$) describing the distance/time of the universe. Unitless in (0.0, 1.0].
+
+        Returns
+        -------
+        dl : array_like
+            Luminosity distance to the given scale-factors.  Units of [cm].
+
+        """
+        dl = self._interp(scafa, self._grid_a, self._grid_dlum, self._sort_a)
+        return dl
 
     def a_to_tage(self, sca):
         """Get the age of the universe [seconds] at the given scale factor(s).
+
+        Parameters
+        ----------
+        scafa : array_like,
+            Scale-factor ($a$) describing the distance/time of the universe. Unitless in (0.0, 1.0].
+
+        Returns
+        -------
+        tage : array_like
+            Age of the universe at the given scale-factors.  Units of [sec].
+
         """
         tage = self._interp(sca, self._grid_a, self._grid_age, self._sort_a)
         return tage
 
+    def a_to_tlbk(self, scafa):
+        """Get the lookback time [seconds] at the given scale factor(s).
+
+        Parameters
+        ----------
+        scafa : array_like,
+            Scale-factor ($a$) describing the distance/time of the universe.
+
+        Returns
+        -------
+        tlook : array_like
+            Lookback time to the universe at the given scale-factors.  Units of [sec].
+
+        """
+        tlook = self._interp(scafa, self._grid_a, self._grid_lbk, self._sort_a)
+        return tlook
+
+    # ==== z to distance measures ====
+
+    def z_to_dcom(self, redz):
+        """Get the comoving distance [cm] at the given redshift(s).
+
+        Parameters
+        ----------
+        redz : array_like,
+            Redshift ($z$) describing the distance/time of the universe. Unitless in [0.0, inf).
+
+        Returns
+        -------
+        dc : array_like
+            Comoving distance to the given redshift(s).  Units of [cm].
+
+        """
+        dc = self._interp(redz, self._grid_z, self._grid_dcom, self._sort_z)
+        return dc
+
+    def z_to_dlum(self, redz):
+        """Get the luminosity distance [cm] at the given redshift(s).
+
+        Parameters
+        ----------
+        redz : array_like,
+            Redshift ($z$) describing the distance/time of the universe. Unitless in [0.0, inf).
+
+        Returns
+        -------
+        dl : array_like
+            Luminosity distance to the given redshift(s).  Units of [cm].
+
+        """
+        dl = self._interp(redz, self._grid_z, self._grid_dlum, self._sort_z)
+        return dl
+
     def z_to_tage(self, redz):
         """Get the age of the universe [seconds] at the given redshift(s).
+
+        Parameters
+        ----------
+        redz : array_like,
+            Redshift ($z$) describing the distance/time of the universe. Unitless in [0.0, inf).
+
+        Returns
+        -------
+        tage : array_like
+            Age of the universe at the given redshift(s).  Units of [sec].
+
         """
         tage = self._interp(redz, self._grid_z, self._grid_age, self._sort_z)
         return tage
 
-    def z_to_dcom(self, zz):
-        """Get the comoving distance [cm] at the given redshift(s).
-        """
-        dc = self._interp(zz, self._grid_z, self._grid_dcom, self._sort_z)
-        return dc
-
-    def z_to_dlum(self, zz):
-        """Get the luminosity distance [cm] at the given redshift(s).
-        """
-        dl = self._interp(zz, self._grid_z, self._grid_dlum, self._sort_z)
-        return dl
-
     def z_to_tlbk(self, redz):
         """Get the lookback time [seconds] at the given redshift(s).
+
+        Parameters
+        ----------
+        redz : array_like,
+            Redshift ($z$) describing the distance/time of the universe. Unitless in [0.0, inf).
+
+        Returns
+        -------
+        tlook : array_like
+            Lookback time to the universe at the given redshift(s).  Units of [sec].
+
         """
         zz = self._interp(redz, self._grid_z, self._grid_lbk, self._sort_z)
         return zz
 
-    # ==== distance measures to a/z ====
+    # ==== distance measures to a ====
 
-    def tage_to_z(self, age):
-        """Convert from age of the universe [seconds] to redshift.
-        """
-        zz = self._interp(age, self._grid_age, self._grid_z, self._sort_age)
-        return zz
+    def dcom_to_a(self, dc):
+        """Convert from comoving distance [cm] to scale-factor.
 
-    def tage_to_a(self, age):
-        """Convert from age of the universe [seconds] to scale factor.
-        """
-        aa = self._interp(age, self._grid_age, self._grid_a, self._sort_age)
-        return aa
+        Parameters
+        ----------
+        dc : array_like
+            Comoving distance.  Units of [cm].
 
-    def tlbk_to_z(self, lbk):
-        """Convert from lookback time [seconds] to redshift.
+        Returns
+        -------
+        scafa : array_like,
+            Scale-factor ($a$) describing the distance/time of the universe. Unitless in (0.0, 1.0].
+
         """
-        zz = self._interp(lbk, self._grid_lbk, self._grid_z, self._sort_lbk)
-        return zz
+        scafa = self._interp(dc, self._grid_dcom, self._grid_a, self._sort_dcom)
+        return scafa
+
+    def dlum_to_a(self, dl):
+        """Convert from luminosity distance [cm] to scale-factor.
+
+        Parameters
+        ----------
+        dl : array_like
+            Luminosity distance.  Units of [cm].
+
+        Returns
+        -------
+        scafa : array_like,
+            Scale-factor ($a$) describing the distance/time of the universe. Unitless in (0.0, 1.0].
+
+        """
+        scafa = self._interp(dl, self._grid_dlum, self._grid_a, self._sort_dlum)
+        return scafa
+
+    def tage_to_a(self, tage):
+        """Convert from age of the universe [seconds] to scale-factor.
+
+        Parameters
+        ----------
+        tage : array_like
+            Age of the universe.  Units of [sec].
+
+        Returns
+        -------
+        scafa : array_like,
+            Scale-factor ($a$) describing the distance/time of the universe. Unitless in (0.0, 1.0].
+
+        """
+        scafa = self._interp(tage, self._grid_age, self._grid_a, self._sort_age)
+        return scafa
+
+    def tlbk_to_a(self, tlook):
+        """Convert from lookback time [seconds] to scale-factor.
+
+        Parameters
+        ----------
+        tlook : array_like
+            Lookback time of the universe.  Units of [sec].
+
+        Returns
+        -------
+        scafa : array_like,
+            Scale-factor ($a$) describing the distance/time of the universe. Unitless in (0.0, 1.0].
+
+        """
+        scafa = self._interp(tlook, self._grid_lbk, self._grid_a, self._sort_lbk)
+        return scafa
+
+    # ==== distance measures to z ====
 
     def dcom_to_z(self, dc):
         """Convert from comoving distance [cm] to redshift.
+
+        Parameters
+        ----------
+        dc : array_like
+            Comoving distance.  Units of [cm].
+
+        Returns
+        -------
+        redz : array_like,
+            Redshift ($z$) describing the distance/time of the universe. Unitless in [0.0, inf).
+
         """
         zz = self._interp(dc, self._grid_dcom, self._grid_z, self._sort_dcom)
         return zz
 
     def dlum_to_z(self, dl):
         """Convert from luminosity distance [cm] to redshift.
+
+        Parameters
+        ----------
+        dl : array_like
+            Luminosity distance.  Units of [cm].
+
+        Returns
+        -------
+        redz : array_like,
+            Redshift ($z$) describing the distance/time of the universe. Unitless in [0.0, inf).
+
         """
         zz = self._interp(dl, self._grid_dlum, self._grid_z, self._sort_dlum)
+        return zz
+
+    def tage_to_z(self, age):
+        """Convert from age of the universe [seconds] to redshift.
+
+        Parameters
+        ----------
+        tage : array_like
+            Age of the universe.  Units of [sec].
+
+        Returns
+        -------
+        redz : array_like,
+            Redshift ($z$) describing the distance/time of the universe. Unitless in [0.0, inf).
+
+        """
+        zz = self._interp(age, self._grid_age, self._grid_z, self._sort_age)
+        return zz
+
+    def tlbk_to_z(self, tlook):
+        """Convert from lookback time [seconds] to redshift.
+
+        Parameters
+        ----------
+        tlook : array_like
+            Lookback time of the universe.  Units of [sec].
+
+        Returns
+        -------
+        redz : array_like,
+            Redshift ($z$) describing the distance/time of the universe. Unitless in [0.0, inf).
+
+        """
+        zz = self._interp(tlook, self._grid_lbk, self._grid_z, self._sort_lbk)
         return zz
 
     # ==== other cosmological measures ====
@@ -351,6 +567,7 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
             dt/dz at the given redshift(s).
 
         """
+        zz = np.asarray(zz)
         efac = self.efunc(zz)
         time_hub = self.hubble_time.to('s').value
 

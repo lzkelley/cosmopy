@@ -24,7 +24,5 @@ YR = ap.units.year.to(ap.units.s)       # year in seconds
 U_SEC = ap.units.Unit('s')       # second unit
 U_CM = ap.units.Unit('cm')       # centimeter unit
 
-COLORED_OUTPUT = True
-
 from . cosmology import Cosmology          # noqa
 from . __main__ import get_cosmology, api  # noqa

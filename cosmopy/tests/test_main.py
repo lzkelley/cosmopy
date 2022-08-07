@@ -1,6 +1,8 @@
 """Test methods for `cosmopy.__main__.py`.
 """
 
+import runpy
+
 import numpy as np
 import astropy as ap
 import astropy.units
@@ -14,6 +16,15 @@ class TestMain:
     z_low = 0.001
     vals_low = [1.3353e+25, 1.3340e+25, 4.3356e+17, 4.4475e+14]
     arg_keys = ['dl', 'dc', 'ta', 'tl']
+
+    def test__module(self):
+        with pytest.raises(SystemExit):
+            runpy.run_module('cosmopy', run_name='__main__')
+
+        # globs = {'sys.argv': ['cosmopy', '-z', '0.1']}
+        # print("\n\n\n=================================================\n\n\n")
+        # runpy.run_module('cosmopy', run_name='__main__', init_globals=globs)
+        return
 
     def test__parse_args(self):
         from cosmopy.__main__ import parse_args
