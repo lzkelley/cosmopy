@@ -173,7 +173,7 @@ class TestCosmology:
         RTOL = 1e-6
 
         redz = 10**np.random.uniform(-2, 1, int(NUM))
-        redz = sorted(redz)
+        redz = np.sort(redz)
 
         vals = cosmo.dVcdz(redz, cgs=True)
         check = cosmo.differential_comoving_volume(redz).cgs.value * 4*np.pi
@@ -212,7 +212,7 @@ class TestCosmology:
 
         NUM = 1000
         redz = 10 ** np.random.uniform(-2, 1, int(NUM))
-        redz = sorted(redz)
+        redz = np.sort(redz)
 
         def check(zz):
             zz = np.asarray(zz)
