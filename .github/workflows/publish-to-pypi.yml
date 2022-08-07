@@ -1,13 +1,22 @@
 name: Build and publish Python distributions to PyPI
 on:
-  push:
-    branches:
-      - "main"
+  # push:
+  #   branches:
+  #     - "main"
+
+  # Only run the `build-status` workflow, on branch `main` completes.  In the job, it checks
+  # to make sure the workflow succeeded (using the `if` condition).
+  workflow_run:
+      workflows: [build-status]
+      types: [completed]
+      branches: [main]
 
 jobs:
   build-publish:
     name: Build and publish Python distributions to PyPI
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
+
     steps:
     - name: git checkout repository main
       uses: actions/checkout@v3

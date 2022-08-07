@@ -177,9 +177,9 @@ class TestCosmology:
 
         vals = cosmo.dVcdz(redz, cgs=True)
         check = cosmo.differential_comoving_volume(redz).cgs.value * 4*np.pi
-        print(f"redz  : ", _stats(redz))
-        print(f"dVcdz : ", _stats(vals))
-        print(f"check : ", _stats(check))
+        print("redz  : ", _stats(redz))
+        print("dVcdz : ", _stats(vals))
+        print("check : ", _stats(check))
         assert np.allclose(vals, check, rtol=RTOL), "Error in dvcdz exceeds rtol = {}".format(RTOL)
 
         # use CGS units
@@ -188,9 +188,9 @@ class TestCosmology:
         check = cosmo.differential_comoving_volume(redz).cgs.value * 4*np.pi
         print("\ncheck = ", check[:4], check[-4:])
 
-        print(f"redz  : ", _stats(redz))
-        print(f"dVcdz : ", _stats(vals))
-        print(f"check : ", _stats(check))
+        print("redz  : ", _stats(redz))
+        print("dVcdz : ", _stats(vals))
+        print("check : ", _stats(check))
         assert np.allclose(vals, check, rtol=RTOL), "Error in dvcdz(cgs=True) exceeds rtol = {}".format(RTOL)
 
         # use standard units
@@ -199,9 +199,9 @@ class TestCosmology:
         check = cosmo.differential_comoving_volume(redz).value * 4*np.pi
         print("\ncheck = ", check[:4], check[-4:])
 
-        print(f"redz  : ", _stats(redz))
-        print(f"dVcdz : ", _stats(vals))
-        print(f"check : ", _stats(check))
+        print("redz  : ", _stats(redz))
+        print("dVcdz : ", _stats(vals))
+        print("check : ", _stats(check))
         assert np.allclose(vals, check, rtol=RTOL), "Error in dvcdz(cgs=False) exceeds rtol = {}".format(RTOL)
 
         return
