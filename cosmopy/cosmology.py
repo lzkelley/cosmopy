@@ -159,10 +159,6 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
 
         """
         sf = np.asarray(sf)
-        # NOTE: this does not check for `nan`
-        if not np.all((sf > 0.0) & (sf <= 1.0)):
-            raise ValueError("Scale-factor must be [0.0, 1.0]")
-
         return (1.0/sf) - 1.0
 
     @staticmethod
@@ -183,10 +179,6 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
 
         """
         redz = np.asarray(redz)
-        # NOTE: this does not check for `nan`
-        if not np.all(redz >= 0.0):
-            raise ValueError("Redshift must be [0.0, +inf)")
-
         return 1.0/(redz + 1.0)
 
     @staticmethod
