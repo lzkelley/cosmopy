@@ -50,7 +50,7 @@ def calc_basic(cosmo, sets):
     if sets.z is not None:
         redz = parse_input(sets.z)
 
-    # Scalefactor
+    # Scale factor
     elif sets.a is not None:
         scale = parse_input(sets.a)
         redz = cosmo.a_to_z(scale)
