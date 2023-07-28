@@ -159,6 +159,9 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
 
         """
         sf = np.asarray(sf)
+        if np.any(sf > 1) or np.any(sf <= 0):
+            raise ValueError(f"Number < than 1 and > 0 expected, got: {sf}")
+
         return (1.0/sf) - 1.0
 
     @staticmethod
@@ -179,6 +182,10 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
 
         """
         redz = np.asarray(redz)
+        # If blueshifting: don't
+        if np.any(redz < 0):
+            raise ValueError(f"Number >= than 0 expected, got: {redz}")
+
         return 1.0/(redz + 1.0)
 
     @staticmethod
@@ -315,6 +322,8 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
             Comoving distance to the given redshift(s).  Units of [cm].
 
         """
+        if np.any(redz < 0):
+            raise ValueError(f"Number >= than 0 expected, got: {redz}")
         dc = self._interp(redz, self._grid_z, self._grid_dcom, self._sort_z)
         return dc
 
@@ -332,6 +341,8 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
             Luminosity distance to the given redshift(s).  Units of [cm].
 
         """
+        if np.any(redz < 0):
+            raise ValueError(f"Number >= than 0 expected, got: {redz}")
         dl = self._interp(redz, self._grid_z, self._grid_dlum, self._sort_z)
         return dl
 
@@ -349,6 +360,8 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
             Age of the universe at the given redshift(s).  Units of [sec].
 
         """
+        if np.any(redz < 0):
+            raise ValueError(f"Number >= than 0 expected, got: {redz}")
         tage = self._interp(redz, self._grid_z, self._grid_age, self._sort_z)
         return tage
 
@@ -366,6 +379,8 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
             Lookback time to the universe at the given redshift(s).  Units of [sec].
 
         """
+        if np.any(redz < 0):
+            raise ValueError(f"Number >= than 0 expected, got: {redz}")
         zz = self._interp(redz, self._grid_z, self._grid_lbk, self._sort_z)
         return zz
 
