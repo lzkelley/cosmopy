@@ -25,6 +25,7 @@ from . import SPLC
 Omega0 = 0.2880                #: Matter density parameter "Om0"
 OmegaBaryon = 0.0472           #: Baryon density parameter "Ob0"
 HubbleParam = 0.6933           #: Hubble Parameter as H0/[100 km/s/Mpc], i.e. 0.69 instead of 69
+T_CMB0 = 2.7254                #: The CMB Temperature at z=0 "T_CMB" [K]
 # Hubble0 = HubbleParam * 100.0  # NOTE: this *cannot* be named `H0` or `_H0` --- conflicts with astropy internals
 
 # Define redshift grid: `_Z_GRID` defines the course grid points, between which `_GRID_SIZE` points
@@ -47,7 +48,7 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
 
     """
 
-    def __init__(self, h=None, H0=None, Om0=None, Ob0=None, size=None, **kwargs):
+    def __init__(self, h=None, H0=None, Om0=None, Ob0=None, Tcmb0=None, size=None, **kwargs):
         """
         """
         # ---- Set Defaults
@@ -61,7 +62,9 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
             Om0 = Omega0
         if Ob0 is None:
             Ob0 = OmegaBaryon
-        kw = dict(H0=H0, Om0=Om0, Ob0=Ob0)
+        if Tcmb0 is None:
+            Tcmb0 = T_CMB0
+        kw = dict(H0=H0, Om0=Om0, Ob0=Ob0, Tcmb0=Tcmb0)
         kwargs.update(kw)
         if size is None:
             size = _GRID_SIZE_DEF
@@ -95,9 +98,9 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
     def __str__(self):
         """Return a string description of this instance.
         """
-        rstr = "{} :: H0 = {:.8f}, Om0 = {:.8f}, Ob0 = {:.8f}".format(
-            # __class__, self.Hubble0, self.Omega0, self.OmegaBaryon
-            __class__, self.H0, self.Om0, self.Ob0
+        rstr = "{} :: H0 = {:.8f}, Om0 = {:.8f}, Ob0 = {:.8f}, Tcmb0 = {:.8f}".format(
+            # __class__, self.Hubble0, self.Omega0, self.OmegaBaryon, self.T_CMB0
+            __class__, self.H0, self.Om0, self.Ob0, self.Tcmb0
         )
         return rstr
 
@@ -178,7 +181,7 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
         Returns
         -------
         float or array
-            Scale factor(s) at the inpur redshift(s).
+            Scale factor(s) at the input redshift(s).
 
         """
         redz = np.asarray(redz)
