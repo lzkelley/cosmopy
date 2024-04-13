@@ -12,13 +12,13 @@ import astropy as ap
 from . cosmology import Cosmology
 from . import PC, ARCSEC, U_SEC, U_CM
 
-_RESULTS_FUNCS = ['luminosity_distance', 'comoving_distance', 'lookback_time', 'age']
+_RESULTS_FUNCS = ['comoving_distance', 'luminosity_distance', 'angular_diameter_distance', 'lookback_time', 'age']
+_RESULTS_FUNC_PARS = ['dc', 'dl', 'da', 'tl', 'ta']
 
-_RESULTS_FUNC_PARS = ['dl', 'dc', 'tl', 'ta']
 _RESULTS_PARS = ['z', 'a'] + _RESULTS_FUNC_PARS
 
-_COLOR_BASE = "magenta"  # "cyan"
-_COLOR_CONV = "green"  # "yellow"
+_COLOR_BASE = "magenta"
+_COLOR_CONV = "green"
 _COLOR_NAME = "red"
 
 # Enable imperial units (e.g. 'miles')
@@ -107,7 +107,7 @@ def calc_basic(cosmo, sets):
         raise ValueError("No input given!")
 
     # Calculate scale-factor if needed
-    scale = cosmo.z_to_a(redz) if scale is None else scale
+    scale = cosmo.z_to_a(redz) if (scale is None) else scale
     results['a'] = scale
     results['z'] = redz
 
@@ -185,6 +185,7 @@ def output_print(results, print_output=True):
     outs = []
     for kk, ss, tt, nn in zip(keys, symbs, types, names):
         vv = results[kk]
+        # print(f"key={kk}, symb={ss}, type={tt}, name={nn}, results[{kk}]={vv}")
         try:
             vv = vv.item()
         except AttributeError:
