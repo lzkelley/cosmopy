@@ -1,8 +1,8 @@
 """
 """
 
-__version__ = "3.2.1"
-__author__ = "Luke Zoltan Kelley <lzkelley@northwestern.edu>"
+__version__ = "3.6"
+__author__ = "Luke Zoltan Kelley <lzkelley@berkeley.edu>"
 __license__ = "MIT"
 
 import astropy as ap

@@ -16,7 +16,7 @@ with open(FNAME_VERSION, "r") as inn:
 setup(
     name="cosmopy",
     author="Luke Zoltan Kelley",
-    author_email="lzkelley@northwestern.edu",
+    author_email="lzkelley@berkeley.edu",
     version=version,
     description="",
     license="MIT",
@@ -33,5 +33,5 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     keywords=['utilities', 'physics', 'astronomy', 'cosmology', 'astrophysics', 'calculator'],
-    python_requires=">=3.5",
+    python_requires=">=3.8",
 )
