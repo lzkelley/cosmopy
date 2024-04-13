@@ -106,12 +106,12 @@ class TestCosmology:
         assert (np.allclose(Cosmology.a_to_z(aa), zz))
 
         # Test out-of-domain errors
-        # with pytest.raises(ValueError):
-        #     Cosmology.a_to_z(-0.1)
-        # with pytest.raises(ValueError):
-        #     Cosmology.a_to_z(1.1)
-        # with pytest.raises(ValueError):
-        #     Cosmology.z_to_a(-0.2)
+        with pytest.raises(ValueError):
+            Cosmology.a_to_z(-0.1)
+        with pytest.raises(ValueError):
+            Cosmology.a_to_z(1.1)
+        with pytest.raises(ValueError):
+            Cosmology.z_to_a(-0.2)
 
         return
 
