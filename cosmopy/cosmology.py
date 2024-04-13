@@ -90,6 +90,9 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
         #    Luminosity distances in centimeters
         self._grid_dlum = self.luminosity_distance(zgrid).cgs.value
         self._sort_dlum = np.argsort(self._grid_dlum)
+        #    Angular-diameter distances in centimeters
+        self._grid_dang = self.angular_diameter_distance(zgrid).cgs.value
+        self._sort_dang = np.argsort(self._grid_dang)
         return
 
     def __str__(self):
@@ -265,6 +268,23 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
         dl = self._interp(scafa, self._grid_a, self._grid_dlum, self._sort_a)
         return dl
 
+    def a_to_dang(self, scafa):
+        """Get the angular-diameter distance [cm] at the given scale factor(s).
+
+        Parameters
+        ----------
+        scafa : array_like,
+            Scale-factor ($a$) describing the distance/time of the universe. Unitless in (0.0, 1.0].
+
+        Returns
+        -------
+        da : array_like
+            Luminosity distance to the given scale-factors.  Units of [cm].
+
+        """
+        da = self._interp(scafa, self._grid_a, self._grid_dang, self._sort_a)
+        return da
+
     def a_to_tage(self, sca):
         """Get the age of the universe [seconds] at the given scale factor(s).
 
@@ -334,6 +354,23 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
         """
         dl = self._interp(redz, self._grid_z, self._grid_dlum, self._sort_z)
         return dl
+
+    def z_to_dang(self, redz):
+        """Get the angular-diameter distance [cm] at the given redshift(s).
+
+        Parameters
+        ----------
+        redz : array_like,
+            Redshift ($z$) describing the distance/time of the universe. Unitless in [0.0, inf).
+
+        Returns
+        -------
+        da : array_like
+            Angular-diameter distance to the given redshift(s).  Units of [cm].
+
+        """
+        da = self._interp(redz, self._grid_z, self._grid_dang, self._sort_z)
+        return da
 
     def z_to_tage(self, redz):
         """Get the age of the universe [seconds] at the given redshift(s).
@@ -405,6 +442,23 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
         scafa = self._interp(dl, self._grid_dlum, self._grid_a, self._sort_dlum)
         return scafa
 
+    def dang_to_a(self, da):
+        """Convert from angular-diameter distance [cm] to scale-factor.
+
+        Parameters
+        ----------
+        da : array_like
+            Angular-diameter distance.  Units of [cm].
+
+        Returns
+        -------
+        scafa : array_like,
+            Scale-factor ($a$) describing the distance/time of the universe. Unitless in (0.0, 1.0].
+
+        """
+        scafa = self._interp(da, self._grid_dang, self._grid_a, self._sort_dang)
+        return scafa
+
     def tage_to_a(self, tage):
         """Convert from age of the universe [seconds] to scale-factor.
 
@@ -473,6 +527,23 @@ class Cosmology(ap.cosmology.FlatLambdaCDM):
 
         """
         zz = self._interp(dl, self._grid_dlum, self._grid_z, self._sort_dlum)
+        return zz
+
+    def dang_to_z(self, da):
+        """Convert from angular-diameter distance [cm] to redshift.
+
+        Parameters
+        ----------
+        da : array_like
+            Angular-diameter distance.  Units of [cm].
+
+        Returns
+        -------
+        redz : array_like,
+            Redshift ($z$) describing the distance/time of the universe. Unitless in [0.0, inf).
+
+        """
+        zz = self._interp(da, self._grid_dang, self._grid_z, self._sort_dang)
         return zz
 
     def tage_to_z(self, age):
