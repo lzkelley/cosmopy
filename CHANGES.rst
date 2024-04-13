@@ -13,7 +13,7 @@ To-Do
 
 Current
 -------
-    -   Added redshift to comoving and luminosity distance methods.
+    -   Added redshift to comoving-, luminosity-, and angular-diameter- distance methods.
     -   Added differential volume calculation (dVc/dz)
 
 

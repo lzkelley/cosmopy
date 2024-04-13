@@ -71,19 +71,34 @@ def calc_basic(cosmo, sets):
     elif sets.dc is not None:
         dcom = parse_input(sets.dc, U_CM)
         redz = cosmo.dcom_to_z(dcom.cgs.value)
-        # Calculate luminosity-distance manually
+        # Calculate distances manually
         dlum = dcom * (1.0 + redz)
+        dang = dcom / (1.0 + redz)
         results['dc'] = dcom
         results['dl'] = dlum
+        results['da'] = dang
 
     # Luminosity Distance
     elif sets.dl is not None:
         dlum = parse_input(sets.dl, U_CM)
         redz = cosmo.dlum_to_z(dlum.cgs.value)
-        # Calculate comoving-distance manually
+        # Calculate distances manually
         dcom = dlum / (1.0 + redz)
+        dang = dlum / (1.0 + redz)**2
         results['dc'] = dcom
         results['dl'] = dlum
+        results['da'] = dang
+
+    # Angular-diameter Distance
+    elif sets.da is not None:
+        dang = parse_input(sets.da, U_CM)
+        redz = cosmo.dang_to_z(dang.cgs.value)
+        # Calculate distances manually
+        dcom = dang * (1.0 + redz)
+        dlum = dcom * (1.0 + redz)
+        results['dc'] = dcom
+        results['dl'] = dlum
+        results['da'] = dang
 
     # No arguments set, raise error
     else:
@@ -310,6 +325,8 @@ def parse_args(args):
                         help='target coming distance D_C')
     parser.add_argument('-dl', '-ld', default=None,
                         help='target luminosity distance D_L')
+    parser.add_argument('-da', '-ad', default=None,
+                        help='target angular-diameter distance D_a')
     parser.add_argument('-tl', '-lt', default=None,
                         help='target look-back time T_L')
     parser.add_argument('-ta', '-at', default=None,

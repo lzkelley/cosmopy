@@ -154,6 +154,9 @@ class TestMain:
         args = ['dc', '0.4231241Gpc']
         compare(args)
 
+        args = ['da', '384.4342Mpc']
+        compare(args)
+
         return
 
     def test__calc_basic(self):
